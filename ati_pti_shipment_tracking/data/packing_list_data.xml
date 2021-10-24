@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record model="packing.list" id="data_pl">
+          <field name="name">CTS0001</field>
+          <field name="code">CTS</field>
+        </record>
+
+        <record model="packing.list.type" id="data_plt">
+          <field name="name">CR</field>
+          <field name="code">CR</field>
+        </record>
+        
+    </data>
+</odoo>
+

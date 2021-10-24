@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="export_import_product_form_view" model="ir.ui.view">
+            <field name="name">export.import.product.form</field>
+            <field name="model">export.import.product.wiz</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Export/Update Product">
+                    <group>
+                        <group>
+                            <field name="categ_id" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}" placeholder="Filter By Category"/>
+                        </group>
+                        <group>
+                            <field name="book" filename="book_filename"  placeholder="Upload XLS file..." widget="binary"/>
+	            	        <field name="book_filename" invisible="1"/>  
+                        </group>
+                        <field name="product_ids" domain="[('categ_id','=',categ_id)]" options="{'no_create': True, 'no_create_edit': True}"/>
+                    </group>
+                    <footer>
+                        <button class="oe_highlight" string="Export Product" name="export_file" type="object"/> or
+                        <button class="oe_highlight" string="Update Product" name="import_file" type="object"/> or
+                        <button class="oe_link" string="Cancel" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_export_import_product" model="ir.actions.act_window">
+            <field name="name">Export/Update Product</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">export.import.product.wiz</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    <menuitem name="Export/Update Product" id="menu_export_import_product"  parent="sale.product_menu_catalog"
+              action="action_export_import_product" sequence="32"/>
+    </data>
+</odoo>

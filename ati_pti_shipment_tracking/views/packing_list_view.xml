@@ -1,0 +1,50 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+    
+    <record model="ir.ui.view" id="view_packing_list_form">
+      <field name="name">view.packing.list.form</field>
+      <field name="model">packing.list</field>
+      <field name="arch" type="xml">
+        <form>
+          <group>
+            <group>
+                <field name="name"/>
+                <field name="code"/>
+            </group>
+            <group>
+                <field name="parent_id"/>
+                <field name="packing_list_type"/>
+            </group>
+          </group>
+          
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_packing_list_tree">
+      <field name="name">view.packing.list.tree</field>
+      <field name="model">packing.list</field>
+      <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="code"/>
+            <field name="parent_id"/>
+            <field name="packing_list_type"/>
+        </tree>
+      </field>
+    </record>
+   
+
+    <!-- actions opening views on models -->
+    
+    <record model="ir.actions.act_window" id="action_window_packing_list">
+      <field name="name">Packing List</field>
+      <field name="res_model">packing.list</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="config_menu_packing_list" name="Packing List" parent="configuration_menu" sequence="2" action="action_window_packing_list"/>
+   
+  </data>
+</odoo>

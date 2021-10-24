@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record model="sqo.state.wizard" id="data_so_state_draft">
+          <field name="name">Draft</field>
+          <field name="code">draft</field>
+          <field name="sequence" eval="1"/>
+        </record>
+
+        <record model="sqo.state.wizard" id="data_so_state_waiting">
+          <field name="name">Waiting Approval Division Manager</field>
+          <field name="code">waiting</field>
+          <field name="sequence" eval="2"/>
+        </record>
+
+        <record model="sqo.state.wizard" id="data_so_state_approved_sbu">
+          <field name="name">Waiting Approval SBU Director</field>
+          <field name="code">approved_sbu</field>
+          <field name="sequence" eval="3"/>
+        </record>
+
+        <record model="sqo.state.wizard" id="data_so_state_approved_manager">
+          <field name="name">Waiting Approval President Director</field>
+          <field name="code">approved_manager</field>
+          <field name="sequence" eval="4"/>
+        </record>
+
+        <record model="sqo.state.wizard" id="data_so_state_approved">
+          <field name="name">Approved</field>
+          <field name="code">approved</field>
+          <field name="sequence" eval="5"/>
+        </record>
+
+        <record model="sqo.state.wizard" id="data_so_state_sent">
+          <field name="name">Sent To Customer</field>
+          <field name="code">sent</field>
+          <field name="sequence" eval="6"/>
+        </record>
+
+        <record model="sqo.state.wizard" id="data_so_state_accepted">
+          <field name="name">Accepted By Customer</field>
+          <field name="code">accepted</field>
+          <field name="sequence" eval="7"/>
+        </record>
+
+        <record model="sqo.state.wizard" id="data_so_state_sale">
+          <field name="name">Waiting For Delivery</field>
+          <field name="code">sale</field>
+          <field name="sequence" eval="8"/>
+        </record>
+
+        <record model="sqo.state.wizard" id="data_so_state_delivery">
+          <field name="name">Delivery Process</field>
+          <field name="code">delivery</field>
+          <field name="sequence" eval="9"/>
+        </record>
+
+        <record model="sqo.state.wizard" id="data_so_state_waiting_invoice">
+          <field name="name">Waiting Invoice</field>
+          <field name="code">waiting_invoice</field>
+          <field name="sequence" eval="10"/>
+        </record>
+
+        <record model="sqo.state.wizard" id="data_so_state_waiting_payment">
+          <field name="name">Waiting Payment</field>
+          <field name="code">waiting_payment</field>
+          <field name="sequence" eval="11"/>
+        </record>
+
+        <record model="sqo.state.wizard" id="data_so_state_done">
+          <field name="name">Done</field>
+          <field name="code">done</field>
+          <field name="sequence" eval="12"/>
+        </record>
+
+        <record model="sqo.state.wizard" id="data_so_state_cancel">
+          <field name="name">Cancel</field>
+          <field name="code">cancel</field>
+          <field name="sequence" eval="13"/>
+        </record>
+
+    </data>
+</odoo>
+

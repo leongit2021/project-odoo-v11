@@ -1,0 +1,483 @@
+<odoo>
+  <data>
+    <!-- Catatan: nama awalnya: Pickup Goods, model: pickup.goods, seiring development nama berubah menjadi Collect Goods, model: pickup.goods -->
+    <record model="ir.ui.view" id="pickup_goods_form">
+        <field name="name">pickup.goods.form</field>
+        <field name="model">pickup.goods</field>
+        <field name="arch" type="xml">
+            <form string="Collect Order">
+                <header>
+                    <button name="action_draft" string="Set To Draft" attrs="{'invisible': [('state','!=','cancelled')]}" type="object" class="oe_highlight" groups="ati_pti_shipment_tracking.group_shipment_user_emp"/>
+                    <button name="action_supervisor" string="Waiting SAC Supervisor" attrs="{'invisible': [('state','!=','draft')]}" type="object" class="oe_highlight" groups="ati_pti_shipment_tracking.group_shipment_user_sac"/>
+                    <button name="action_logistics" string="Logistics Confirmation" attrs="{'invisible': [('state','!=','supervisor')]}" type="object" class="oe_highlight" groups="ati_pti_shipment_tracking.group_shipment_user_spv"/>
+                    <button name="action_confirmed" string="Confirmed" attrs="{'invisible': [('state','!=','logistics')]}" type="object" class="oe_highlight" groups="ati_pti_shipment_tracking.group_shipment_user_log"/>
+                    <button name="action_unlocked" string="Unlock" attrs="{'invisible': [('state','not in',('confirmed'))]}" type="object" class="oe_inline" groups="ati_pti_shipment_tracking.group_shipment_user_log"/>
+                    <button name="action_locked" string="Lock" attrs="{'invisible': [('state','not in',('unlocked'))]}" type="object" class="oe_inline" groups="ati_pti_shipment_tracking.group_shipment_user_log"/>
+                    <button name="action_cancelled" string="Cancel" attrs="{'invisible': [('state','in',('draft','cancelled'))]}" type="object" class="oe_inline"/>
+                    <field name="state" widget="statusbar"/>
+                    <field name="si_state" widget="statusbar" clickable="True" groups="ati_pti_shipment_tracking.group_shipment_user_log"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="purchase_order_line_view" type="object" class="oe_stat_button" icon="fa fa-ship" attrs="{'invisible': [('purchase_order_line_count', '=', 0)]}">
+                            <field name="purchase_order_line_count" widget="statinfo" string="Purchase Order Line"/>
+                        </button>
+                        <!-- <button name="shipping_clarification_view" type="object" class="oe_stat_button" icon="fa fa-info-circle" attrs="{'invisible': [('shipping_clarification_count', '=', 0)]}">
+                            <field name="shipping_clarification_count" widget="statinfo" string="Clarification"/>
+                        </button> -->
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="created_by" readonly="1"/>
+                            <field name="partner_id" context="{'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}" domain="[('supplier','=',True),('industry_id.name','=ilike','Transportation')]"/>
+                            <field name="mode_transport" string="Mode of Transport"/>
+                            <field name="origin" string="Origin"/>
+                            <field name="destination" string="Destination"/>
+                            <!-- <field name="picking_type_id" domain="[('code','=','incoming')]" options="{'no_create': True, 'no_create_edit': True}"/> -->
+                            <field name="is_lartas" string="Need Survey Item" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="create_date" string="Order Date" readonly="1"/>
+                            <field name="supervisor_date" readonly="1"/>
+                            <field name="logistics_date" readonly="1"/>
+                            <field name="confirmed_date" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Collect Goods" name="collect_goods">
+                            <button name="%(ati_pti_shipment_tracking.action_list_pickup_goods_wiz)d" attrs="{'invisible': [('state','not in',('draft','unlocked'))]}" string="⇒ select collect goods" type="action" class="oe_inline oe_link oe_left" groups=""/>
+                            <button name="action_delete_pickup_line" attrs="{'invisible': [('state','!=','draft')]}" string="⇒ delete all" type="object" class="oe_inline oe_link oe_right" groups=""/>
+                            <field name="pickup_ids" attrs="{'readonly': [('state','!=','draft')]}">
+                                <tree editable="buttom" create="false" decoration-warning="picked_qty &lt; 1" decoration-danger="is_lartas == True">
+                                    <field name="sequence" class="text-align: center;" readonly="1" force_save="1"/>
+                                    <field name="purchase_order_line_id" invisible="1" options="{'no_create': True,'no_create_edit':True}"/>
+                                    <field name="purchase_id" string="PO" invisible="1" force_save="1"/>
+                                    <field name="po_number" string="PO Number" readonly="1"/>
+                                    <field name="partner_ref" string="Vendor Reference" readonly="1"/>
+                                    <field name="load_code" readonly="1"/>
+                                    <field name="po_line_number" readonly="1"/>
+                                    <field name="item_code" readonly="1"/>
+                                    <field name="item_desc" readonly="1"/>
+                                    <field name="product_qty" readonly="1"/>
+                                    <field name="product_uom" readonly="1"/>
+                                    <field name="picked_qty"/>
+                                    <field name="picked_uom"/>
+                                    <field name="rts_date"/>
+                                    <field name="nor_date" readonly="1"/>
+                                    <field name="is_lartas" readonly="0"/>
+                                </tree>
+                                <form  create="false" >
+                                    <group>
+                                        <group>
+                                            <field name="sequence" class="text-align: center;" readonly="1" force_save="1"/>
+                                            <field name="purchase_order_line_id" invisible="1" options="{'no_create': True,'no_create_edit':True}"/>
+                                            <field name="purchase_id" string="PO" invisible="1" force_save="1"/>
+                                            <field name="po_number" string="PO Number" readonly="1"/>
+                                            <field name="partner_ref" string="Vendor Reference" readonly="1"/>
+                                            <field name="load_code" readonly="1"/>
+                                            <field name="po_line_number" readonly="1"/>
+                                            <field name="item_code" readonly="1"/>
+                                            <field name="item_desc" readonly="1"/>
+                                            <field name="product_qty" readonly="1"/>
+                                            <field name="product_uom" readonly="1"/>
+                                            <field name="picked_qty"/>
+                                            <field name="picked_uom"/>
+                                        </group>
+                                        <group>
+                                            <field name="rts_date"/>
+                                            <field name="nor_date" readonly="1"/>
+                                            <field name="is_lartas" readonly="0"/>
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Shipping Instruction" name="shipping_invoice">
+                            <button name="%(ati_pti_shipment_tracking.action_list_shipping_instruction_wiz)d" attrs="{'invisible': ['|',('state','not in',('confirmed')),('si_state','not in',('draft','si_partial'))]}" string="⇒ new shipping instruction" type="action" class="oe_inline oe_link oe_left" groups=""/>
+                            <field name="invoice_ids" context="{'default_invoice_id':id}" readonly="1">
+                                <tree create="false" edit="false" delete="false" decoration-info="state=='draft'" decoration-danger="parent.state=='confirmed' and parent.si_state=='partial' " decoration-success="parent.si_state=='si_full'">
+                                    <field name="name"/>
+                                    <field name="invoice_id" string="Collect Order"/>
+                                    <field name="date"/>
+                                    <field name="partner_id"/>
+                                    <field name="departure"/>
+                                    <field name="arrival"/>
+                                    <field name="state"/>
+                                </tree>
+                                <form create="false" edit="false" delete="false">
+                                    <div class="oe_title">
+                                        <h1>
+                                            <field name="name" readonly="1"/>
+                                        </h1>
+                                    </div> 
+                                    <group>
+                                        <group>
+                                            <field name="invoice_id" string="Collect Order"/>
+                                            <field name="date"/>
+                                        </group>
+                                        <group>
+                                            <field name="partner_id"/>
+                                            <field name="mode_transport" options="{'no_create': True, 'no_create_edit': True}"/>
+                                            <field name="departure" options="{'no_create': True, 'no_create_edit': True}"/>
+                                            <field name="arrival" options="{'no_create': True, 'no_create_edit': True}"/>
+                                        </group>
+                                    </group>
+                                    <notebook>
+                                        <page string="Invoice Detail Detail">
+                                            <field name="invoice_line_ids">
+                                                <tree editable="buttom" create="false" edit="false" delete="false">
+                                                    <!-- <field name="name" style="text-align: left;"/> -->
+                                                    <field name="commercial_invoice_id" style="text-align: left;" options="{'no_create': True, 'no_create_edit': True}"/>
+                                                    <field name="date"/>
+                                                    <field name="partner_ref"/>
+                                                    <field name="customer_partner_ref"/>
+                                                    <field name="boxes_qty" string="Boxes Qty" sum="Boxes Qty"/>
+                                                    <field name="gross_lb" string="Gross Weight (Lbs)" sum="Gross Weight (Lbs)"/>
+                                                    <field name="gross_kg" string="Gross Weight (Kg)" sum="Gross Weight (Kg)"/>
+                                                </tree>
+                                            </field>
+                                        </page>
+                                        <page string="Survey" name="survey">
+                                            <field name="survey_ids">
+                                                <tree editable="buttom" create="false" edit="false" delete="false">
+                                                    <field name="sequence" readonly="1"/>
+                                                    <field name="load_code" string="Load Code" readonly="1"/>
+                                                    <field name="purchase_order_line_id" invisible="1"/>
+                                                    <field name="purchase_id" string="PO Number" readonly="1"/>
+                                                    <field name="product_id" string="Product" readonly="1"/>
+                                                    <field name="date" string="Survey Date"/>
+                                                    <field name="name" string="Survey Remarks"/>
+                                                    <field name="doc_survey" string="Attachment"/>
+                                                </tree>
+                                            </field>
+                                        </page>
+                                        <page string="Goods Detail" name="goods_detail">
+                                            <field name="goods_detail_ids" readonly="1">
+                                                <tree editable="bottom" default_order="sequence asc" create="false" delete="false" >
+                                                    <field name="sequence" class="text-align: center;"/>
+                                                    <field name="purchase_order_line_id" invisible="1" options="{'no_create': True,'no_create_edit':True}"/>
+                                                    <field name="purchase_id" string="PO" invisible="1" force_save="1"/>
+                                                    <field name="po_number" string="PO Number"/>
+                                                    <field name="partner_ref" string="Vendor Reference"/>
+                                                    <field name="load_code"/>
+                                                    <field name="po_line_number"/>
+                                                    <field name="item_code"/>
+                                                    <field name="item_desc"/>
+                                                    <field name="picked_qty"/>
+                                                    <field name="picked_uom"/>
+                                                    <field name="rts_date"/>
+                                                    <field name="nor_date"/>
+                                                    <field name="is_lartas"/>
+                                                </tree>
+                                            </field>
+                                        </page>
+                                    </notebook>
+                                    <group>
+                                        <group>
+                                            <field name="shipping_marks" placeholder="Shipping Marks..." nolabel="1"/>
+                                        </group>
+                                        <group>
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                    
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- list pickup goods -->
+    <record model="ir.ui.view" id="pickup_goods_tree">
+        <field name="name">pickup.goods.tree</field>
+        <field name="model">pickup.goods</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state=='draft'" decoration-warning="state=='cancelled'" decoration-success="state=='done'">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="mode_transport"/>
+                <field name="create_date" string="Order Date"/>
+                <field name="created_by"/>
+                <field name="state"/>
+                <field name="si_state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_pickup_goods">
+        <field name="name">Collect Order</field>
+        <field name="res_model">pickup.goods</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <!-- search list collect goods-->
+    <record id="pickup_goods_line_filter" model="ir.ui.view">
+        <field name="name">pickup.goods.line.filter</field>
+        <field name="model">pickup.goods.line</field>
+        <field name="arch" type="xml">
+            <search string="Collect Goods Search">
+                <field name="pickup_id"/>
+                <field name="po_number"/>
+                <!-- <filter string="PO Number" domain="[('purchase_id', '=', self)]" /> -->
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="pickup_id" string="Collect Order" context="{'group_by':'pickup_id'}"/>
+                    <separator/>
+                    <filter name="po_number" string="PO Number" context="{'group_by':'po_number'}"/>
+                    <separator/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- list collect goods -->
+    <record model="ir.ui.view" id="pickup_goods_line_tree">
+        <field name="name">pickup.goods.line.tree2</field>
+        <field name="model">pickup.goods.line</field>
+        <field name="arch" type="xml">
+            <tree create="false" edit="false" delete="false" decoration-warning="picked_qty &lt; 1" decoration-danger="is_lartas == True">
+                <field name="sequence" class="text-align: center;" readonly="1" force_save="1"/>
+                <field name="pickup_id" string="Collect Order Number"/>
+                <field name="purchase_order_line_id" invisible="1" options="{'no_create': True,'no_create_edit':True}"/>
+                <field name="purchase_id" string="PO" readonly="1" invisible="1"/>
+                <field name="po_number" string="PO Number" readonly="1"/>
+                <field name="partner_ref" string="Vendor Reference" readonly="1"/>
+                <field name="load_code" readonly="1"/>
+                <field name="po_line_number" readonly="1"/>
+                <field name="item_code" readonly="1"/>
+                <field name="item_desc" readonly="1"/>
+                <field name="product_qty" readonly="1"/>
+                <field name="product_uom" readonly="1"/>
+                <field name="picked_qty"/>
+                <field name="picked_uom"/>
+                <field name="rts_date"/>
+                <field name="nor_date" readonly="1"/>
+                <field name="is_lartas" readonly="1"/>
+                <field name="state_tracking"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_pickup_goods_line">
+        <field name="name">Collect Goods</field>
+        <field name="res_model">pickup.goods.line</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="context">{"search_default_po_number":1}</field>
+        <field name="search_view_id" ref="pickup_goods_line_filter"/>
+        <field name="view_id" ref="pickup_goods_line_tree"/>
+    </record>
+
+    <!-- shipping invoice -->
+    <record model="ir.ui.view" id="goods_invoice_form">
+        <field name="name">goods.invoice.form</field>
+        <field name="model">goods.invoice</field>
+        <field name="arch" type="xml">
+            <form string="Collect Order">
+                <header>
+                    <button name="action_draft" string="Set To Draft" attrs="{'invisible': [('state','!=','cancelled')]}" type="object" class="oe_highlight" groups="ati_pti_shipment_tracking.group_shipment_user_forwarder,ati_pti_shipment_tracking.group_shipment_user_log"/>
+                    <button name="action_waiting" string="Forwarder Validation" attrs="{'invisible': [('state','!=','draft')]}" type="object" class="oe_highlight" groups="ati_pti_shipment_tracking.group_shipment_user_forwarder,ati_pti_shipment_tracking.group_shipment_user_log"/>
+                    <button name="action_logistic" string="Logistic Validation" attrs="{'invisible': [('state','!=','waiting')]}" type="object" class="oe_highlight" groups="ati_pti_shipment_tracking.group_shipment_user_forwarder,ati_pti_shipment_tracking.group_shipment_user_log"/>
+                    <button name="action_cancel" string="Cancel" attrs="{'invisible': [('state','in',('draft'))]}" type="object" class="oe_inline"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="awb_bl_view" type="object" class="oe_stat_button" icon="fa fa-envelope-o">
+                            <!-- <field name="awb_bl_count" widget="statinfo" string="AWB/BL"/> -->
+                            AWB/BL
+                        </button>
+                        <!-- <button name="shipping_clarification_view" type="object" class="oe_stat_button" icon="fa fa-info-circle" attrs="{'invisible': [('shipping_clarification_count', '&lt;', 0)]}">
+                            <field name="shipping_clarification_count" widget="statinfo" string="Clarification"/>
+                        </button> -->
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div> 
+                    <group>
+                        <group>
+                            <field name="invoice_id" readonly="1"  string="Collection Order" options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="partner_id" domain="[('industry_id.name','=ilike','Transportation')]"/>
+                            <field name="mode_transport" options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="departure" options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="arrival" options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="date" string="Goods Pickup Date"/>
+                            <field name="currency_id" options="{'no_create': True, 'no_create_edit': True}" invisible="1"/>
+                        </group>
+                        <group>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Instruction Detail">
+                            <button name="%(ati_pti_shipment_tracking.action_list_commercial_wiz)d" attrs="{'invisible': [('state','not in',('draft'))]}" string="⇒ add multi commercial no." type="action" class="oe_inline oe_link oe_left" groups=""/>
+                            <field name="invoice_line_ids" attrs="{'readonly': [('state','not in',('draft'))]}" context="{'default_invoice_id':invoice_id}">
+                                <tree editable="buttom">
+                                    <!-- <field name="name" style="text-align: left;"/> -->
+                                    <field name="commercial_invoice_id" domain="[('pickup_goods_id','=',parent.invoice_id)]" style="text-align: left;" options="{'no_create': True, 'no_create_edit': True}"/>
+                                    <field name="date"/>
+                                    <field name="purchase_id" invisible="1"/>
+                                    <field name="partner_ref"/>
+                                    <field name="customer_partner_ref"/>
+                                    <field name="boxes_qty"/>
+                                    <field name="gross_lb"/>
+                                    <field name="gross_kg"/>
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right" colspan="2" name="shipping_invoice">
+                                <!-- <field name="amount_total" widget="monetary" options="{'currency_field': 'currency_id'}"/> -->
+                                <field name="total_boxes_qty" readonly="1"/>
+                                <field name="total_gross_lb" readonly="1"/>
+                                <field name="total_gross_kg" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Survey" name="survey">
+                            <field name="survey_ids" attrs="{'readonly': [('state','not in',('draft'))]}">
+                                <tree default_order="sequence asc" editable="bottom" create="false">
+                                    <field name="sequence" readonly="1"/>
+                                    <field name="load_code" string="Load Code" readonly="1"/>
+                                    <field name="purchase_order_line_id" invisible="1"/>
+                                    <field name="purchase_id" string="PO Number" readonly="1"/>
+                                    <field name="product_id" string="Product" readonly="1"/>
+                                    <field name="date" string="Survey Date"/>
+                                    <field name="name" string="Survey Remarks"/>
+                                    <!-- <field name="partner_ref" readonly="1"/> -->
+                                    <field name="doc_survey" string="Attachment"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Goods Detail" name="goods_detail">
+                            <field name="goods_detail_ids" readonly="1">
+                                <tree default_order="sequence asc" editable="bottom" create="false" delete="false" >
+                                    <field name="sequence" class="text-align: center;"/>
+                                    <field name="purchase_order_line_id" invisible="1" options="{'no_create': True,'no_create_edit':True}"/>
+                                    <field name="purchase_id" string="PO" invisible="1" force_save="1"/>
+                                    <field name="po_number" string="PO Number"/>
+                                    <field name="partner_ref" string="Vendor Reference"/>
+                                    <field name="load_code"/>
+                                    <field name="po_line_number"/>
+                                    <field name="item_code"/>
+                                    <field name="item_desc"/>
+                                    <field name="picked_qty"/>
+                                    <field name="picked_uom"/>
+                                    <field name="rts_date"/>
+                                    <field name="nor_date"/>
+                                    <field name="is_lartas"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                    <group>
+                        <group string="Notes">
+                            <field name="shipping_marks" placeholder="Shipping Marks..." nolabel="1"/>
+                        </group>
+                        <group>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- list shipping invoice -->
+    <record model="ir.ui.view" id="goods_invoice_tree">
+        <field name="name">goods.invoice.tree</field>
+        <field name="model">goods.invoice</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state=='draft'" decoration-warning="state=='cancelled'" decoration-success="state=='done'">
+                <field name="name"/>
+                <field name="invoice_id" string="Collect Order"/>
+                <field name="date"/>
+                <field name="partner_id"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_window_goods_invoice">
+        <field name="name">Shipping Instruction</field>
+        <field name="res_model">goods.invoice</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    
+    <!-- commercial invoice no -->
+    <record model="ir.ui.view" id="commercial_invoice_form">
+        <field name="name">commercial.invoice.form</field>
+        <field name="model">commercial.invoice</field>
+        <field name="arch" type="xml">
+            <form string="Commercial Invoice No.">
+                <group>
+                    <group>
+                        <field name="name" placeholder="CTS#..."/>
+                    </group>
+                    <group>
+                        <field name="pickup_goods_id" readonly="1" options="{'no_create': True, 'no_create_edit': True}"/>
+                        <field name="purchase_id" options="{'no_create': True, 'no_create_edit': True}"/>
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!-- survey.report -->
+    <record model="ir.ui.view" id="report_survey_tree">
+        <field name="name">report.survey.tree</field>
+        <field name="model">report.survey</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom" >
+                <field name="sequence" readonly="0"/>
+                <field name="survey_id"/>
+                <field name="load_code" string="Load Code" readonly="1"/>
+                <field name="purchase_order_line_id" invisible="1"/>
+                <field name="purchase_id" string="PO Number" readonly="1"/>
+                <field name="product_id" string="Product" readonly="1"/>
+                <field name="date" string="Survey Date"/>
+                <field name="name" string="Survey Remarks"/>
+                <field name="doc_survey" string="Attachment"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_report_survey">
+      <field name="name">Survey</field>
+      <field name="res_model">report.survey</field>
+      <field name="view_mode">tree</field>
+    </record>
+
+
+    
+    
+    <menuitem id="menu_instruction_pickup_goods" name="Instruction" parent="goods_ordering_menu" sequence="2"/>
+    <menuitem id="menu_pickup_goods_co1" name="Collect Order" parent="menu_instruction_pickup_goods" sequence="2" action="action_pickup_goods" groups="ati_pti_shipment_tracking.group_shipment_user_sac,ati_pti_shipment_tracking.group_shipment_user_spv,ati_pti_shipment_tracking.group_shipment_user_log"/>
+    <!-- <menuitem id="menu_pickup_goods_co2" name="Collect Order 2 " parent="menu_pickup_goods_co1"  sequence="3" action="action_pickup_goods" /> -->
+    <menuitem id="menu_goods_invoice" name="Shipping Instruction" parent="menu_instruction_pickup_goods" sequence="4" action="action_window_goods_invoice" groups="ati_pti_shipment_tracking.group_shipment_user_forwarder,ati_pti_shipment_tracking.group_shipment_user_log"/>
+    <!-- # -->
+    <menuitem id="menu_hist_collect_goods" name="Collect Goods Detail" parent="ati_pti_shipment_tracking.menu_history_all_nor" sequence="26" action="action_pickup_goods_line"/>
+    <!-- # -->
+    <menuitem id="config_menu_report_survey" name="Survey" parent="configuration_menu" sequence="46" action="action_report_survey"/>
+
+
+
+</data>
+</odoo>
+
+
+        

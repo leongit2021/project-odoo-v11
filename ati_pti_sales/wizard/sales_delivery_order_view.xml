@@ -1,0 +1,86 @@
+<odoo>
+    <data>
+        <record id="view_sdo_form_wizard" model="ir.ui.view">
+            <field name="name">view.sales.delivery.order.wizard</field>
+            <field name="model">sales.delivery.order.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Sales Delivery Order Reports">
+                    <p class="oe_grey">
+                        You will download Due Delivery Reports.
+                    </p>
+                    <p style="color:red;">
+                        <b>NOTE: This report will takes time (Over 6 Minutes) to generate</b>
+                        <br/>
+                        <b>Please be patient, don't close or refresh the window</b>
+                    </p>
+                    <group>
+                        <group>
+                            <field name="crm_team_ids" required="1" widget="many2many_tags" options="{'no_create':True,'no_create_edit': True}" placeholder="Sales Channels..."/>
+                            <field name="date" required="1" readonly="1"/>
+                            <field name="is_done"/>
+                        </group>
+                        <group invisible="1">
+                            <table>
+                                <thead style="background-color:#668cff;">
+                                    <th>Delivery due in:</th>
+                                    <!-- <th style="text-align: center;">Start</th>
+                                    <th style="text-align: center;">To</th> -->
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><field name="is_choice_6"/>Overdue</td>
+                                        <!-- <td>Overdue</td>
+                                        <td style="text-align: center;"></td> -->
+                                    </tr>
+                                    <tr>
+                                        <td><field name="is_choice_1"/>0 - 14 Days</td>
+                                        <!-- <td style="text-align: center;"><field name="range_1_from" class="oe_inline" placeholder="Number Days, ex: 0 "/></td>
+                                        <td style="text-align: center;"><field name="range_1_to" class="oe_inline" placeholder="Number Days, ex: 14 "/>Days</td> -->
+                                    </tr>
+                                    <tr>
+                                        <td><field name="is_choice_2"/>15 - 30 Days</td>
+                                        <!-- <td style="text-align: center;"><field name="range_2_from" class="oe_inline" placeholder="Number Days, ex: 15 "/></td>
+                                        <td style="text-align: center;"><field name="range_2_to" class="oe_inline" placeholder="Number Days, ex: 30 "/>  Days</td> -->
+                                    </tr>
+                                    <tr>
+                                        <td><field name="is_choice_3"/>31 - 60 Days</td>
+                                        <!-- <td style="text-align: center;"><field name="range_3_from" class="oe_inline" placeholder="Number Days, ex: 31 "/></td>
+                                        <td style="text-align: center;"><field name="range_3_to" class="oe_inline" placeholder="Number Days, ex: 60 "/>Days</td> -->
+                                    </tr>
+                                    <tr>
+                                        <td><field name="is_choice_4"/>61 - 90 Days</td>
+                                        <!-- <td style="text-align: center;"><field name="range_4_from" class="oe_inline" placeholder="Number Days, ex: 61 "/></td>
+                                        <td style="text-align: center;"><field name="range_4_to" class="oe_inline" placeholder="Number Days, ex: 90 "/>Days</td> -->
+                                    </tr>
+                                    <tr>
+                                        <td><field name="is_choice_5"/>> 90 Days</td>
+                                        <!-- <td style="text-align: left;">&gt;<field name="range_5_from" class="oe_inline" placeholder="Number Days, ex: 90 "/>Days</td>
+                                        <td style="text-align: center;"></td> -->
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="generate" string="Print" type="object" class="oe_highlight"/>
+                        <button string="Close" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_sdo" model="ir.actions.act_window">
+            <field name="name">Due Delivery Report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sales.delivery.order.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_sdo_form_wizard"/>
+            <field name="target">new</field>
+            <!-- <field name="multi">True</field> -->
+        </record>
+            
+        <menuitem id="due_delivery_report" name="Due Delivery Report" parent="sale.menu_sale_report" sequence="11" action="action_sdo"/>
+    
+    </data>
+</odoo>

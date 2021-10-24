@@ -1,0 +1,194 @@
+<odoo>
+  <data>
+    <!-- skep / pib -->
+    <record model="ir.ui.view" id="skep_pib_form">
+        <field name="name">skep.pib.form</field>
+        <field name="model">skep.pib</field>
+        <field name="arch" type="xml">
+            <form string="Determination of SKEP">
+                <header>
+                    <button name="action_draft" string="Draft" attrs="{'invisible': [('state','!=','cancelled')]}" type="object" class="oe_highlight"/>
+                    <!-- <button name="action_skep" string="SKEP" attrs="{'invisible': [('state','!=', 'draft')]}" type="object" class="oe_highlight"/> -->
+                    <button name="action_pib" string="PIB INPUT" attrs="{'invisible': [('state','!=','draft')]}" type="object" class="oe_highlight"/>
+                    <button name="action_done" string="Complete" attrs="{'invisible': [('state','!=','pib')]}" type="object" class="oe_highlight"/>
+                    <button name="action_cancel" string="Cancel" attrs="{'invisible': [('state','in',('draft','cancelled'))]}" type="object" class="oe_inline"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group string="SKEP INPUT">
+                        <group>
+                            <field name="skep_no" attrs="{'readonly': [('state','!=','draft')],'required':[True]}" placeholder="SKEP NO. Example: SKEP 01,SKEP 02,..."/>
+                            <field name="sale_id" readonly="1" attrs="{'invisible': [('sale_id','=',False)]}"/>
+                            <!-- <field name="sale_id"/> -->
+                        </group>
+                        <group attrs="{'invisible': [('sale_id','=',False)]}">
+                            <field name="skep_date" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="skep_recv_date" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="skep_expiry_date" attrs="{'readonly': [('state','!=','draft')]}"/>
+                        </group>
+                    </group>
+                    <notebook attrs="{'invisible': [('sale_id','=',False)]}">
+                        <page string="SKEP Detail">
+                            <div attrs="{'invisible': [('state','!=','draft')]}">
+                                <field name="is_select"  attrs="{'invisible': [('state','!=','draft')]}" style="border:2px solid Tomato;" string="Select All/Not Select All ?"/> Select All/Not Select All ?
+                            </div>
+                            <button name="%(ati_pti_sales.action_list_item_so_wiz)d" attrs="{'invisible': [('state','!=','draft')]}" string="⇒ select more order line" type="action" class="oe_inline oe_link oe_right" groups=""/>
+                            <button name="update_skep_lines" class="btn-primary" style="margin:12px 0px 2px 10px;" string="Update SKEP Lines" Help="Import a xls file template" type="object"/>
+                            <field name="skep_ids" attrs="{'readonly': [('state','!=','draft')]}">
+                                <tree editable="buttom" create="false" delete="false">
+                                    <field name="is_skep" style="border:2px solid blue;" widget="toggle_button"/>
+                                    <field name="seq" readonly="1" style="text-align: center;" force_save="1"/>
+                                    <field name="seq_skep" style="text-align: center;"/>
+                                    <field name="part_number" readonly="1"/>
+                                    <field name="product_id" readonly="1"  options="{'no_create':True,'no_create_edit':True}" force_save="1"/>
+                                    <field name="skep_qty" force_save="1"/>
+                                    <field name="unit_skep_item_value" invisible="1"/>
+                                    <field name="skep_item_value" readonly="0"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="PIB">
+                            <field name="pib_ids" context="{'default_pib_id':id}" attrs="{'readonly': [('state','!=','pib')]}">
+                                <tree>
+                                    <field name="pib_no"/>
+                                    <field name="pib_date"/>
+                                    <field name="pib_expiry_date"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="pib_no" attrs="{'required': [('parent.state','=','pib')]}" placeholder="Example: PIB 01..."/>
+                                            <field name="pib_id" invisible="1" context="{'default_pib_id':pib_id}"/>
+                                            <field name="skep_no" readonly="1"/>
+                                        </group>
+                                        <group>
+                                            <field name="pib_date"/>
+                                            <field name="pib_expiry_date"/>
+                                        </group>
+                                    </group>
+                                    <notebook>
+                                        <page string="PIB Detail">
+                                            <!-- <button name="update_pib" attrs="{'invisible': [('parent.state','!=','pib')]}" string="⇒ update pib" type="object" class="oe_inline oe_link oe_right" groups=""/> -->
+                                            <field name="pib_line_ids">
+                                                <tree editable="buttom" create="false">
+                                                    <field name="is_pib_line"/>
+                                                    <field name="seq" readonly="0" invisible="1" style="text-align: center;"/>
+                                                    <field name="seq_pib" style="text-align: center;"/>
+                                                    <field name="part_number" readonly="1"/>
+                                                    <field name="product_id" readonly="0" options="{'no_create':True,'no_create_edit':True}"/>
+                                                    <field name="reference_product_id" invisible="1" options="{'no_create':True,'no_create_edit':True}"/>
+                                                    <field name="pib_qty" force_save="1"/>
+                                                    <field name="reference_pib_qty" invisible="1" force_save="1"/>
+                                                    <field name="unit_pib_item_values" invisible="1"/>
+                                                    <field name="pib_item_values" readonly="0"/>
+                                                </tree>
+                                            </field>
+                                        </page>
+                                    </notebook>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <!-- <footer>
+                    <button name="set_number" string="Set" type="object" class="oe_highlight"/>
+                    <button string="Close" class="btn-default" special="cancel"/>
+                </footer> -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+    <!-- skep tree view -->
+    <record model="ir.ui.view" id="skep_pib_tree">
+        <field name="name">skep.pib.tree</field>
+        <field name="model">skep.pib</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state=='draft'" decoration-warning="state=='pib'" decoration-success="state=='done'" decoration-danger="state=='cancelled'">
+                <field name="skep_no"/>
+                <field name="skep_date"/>
+                <field name="skep_recv_date"/>
+                <field name="skep_expiry_date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_skep_pib">
+        <field name="name">SKEP</field>
+        <field name="res_model">skep.pib</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- pib tree view-->
+    <record model="ir.ui.view" id="pib_form">
+        <field name="name">pib.form</field>
+        <field name="model">pib.pib</field>
+        <field name="arch" type="xml">
+            <form string="Determination of PIB">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="pib_no" placeholder="PIB NO. Example: PIB 01,PIB 02,..."/>
+                            <field name="pib_id" invisible="1"/>
+                            <field name="skep_no" readonly="1"/>
+                        </group>
+                        <group attrs="{'invisible':[('pib_id','=',False)]}">
+                            <field name="pib_date"/>
+                            <field name="pib_expiry_date"/>
+                        </group>
+                    </group>
+                    <notebook attrs="{'invisible':[('pib_id','=',False)]}">
+                        <page string="PIB Detail">
+                            <field name="pib_line_ids" widget="one2many">
+                                <tree>
+                                    <field name="seq" readonly="1"/>
+                                    <field name="seq_pib"/>
+                                    <field name="part_number" readonly="1"/>
+                                    <field name="product_id" readonly="1" options="{'no_create':True,'no_create_edit':True}"/>
+                                    <field name="pib_qty"/>
+                                    <field name="pib_item_values"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+
+        </field>
+    </record>
+
+    <!-- pib tree view -->
+    <record model="ir.ui.view" id="pib_tree">
+        <field name="name">pib.tree</field>
+        <field name="model">pib.pib</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="pib_no"/>
+                <field name="pib_id" invisible="1"/>
+                <field name="skep_no" readonly="1"/>
+                <field name="pib_date"/>
+                <field name="pib_expiry_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_pib">
+        <field name="name">PIB</field>
+        <field name="res_model">pib.pib</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_formalities" name="FORMALITIES" parent="sale.menu_sale_config" sequence="56" groups=""/>
+    <menuitem id="menu_skep_pib_id" name="SKEP" parent="menu_formalities" sequence="1" action="action_skep_pib"/>
+    <menuitem id="menu_pib_pib_id" name="PIB" parent="menu_formalities" sequence="2" action="action_pib"/>
+
+</data>
+</odoo>
+
+
+        

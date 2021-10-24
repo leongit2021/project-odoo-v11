@@ -1,0 +1,43 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+    
+    <record model="ir.ui.view" id="view_mode_transport_form">
+      <field name="name">view.mode.transport.form</field>
+      <field name="model">mode.transport</field>
+      <field name="arch" type="xml">
+        <form>
+            <group>
+                <group>
+                  <field name="name" placeholder="Ex: By Inland"/>
+                </group>
+                <group>
+                </group>
+            </group>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_mode_transport_tree">
+      <field name="name">view.mode.transport.tree</field>
+      <field name="model">mode.transport</field>
+      <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+        </tree>
+      </field>
+    </record>
+   
+
+    <!-- actions opening views on models -->
+    
+    <record model="ir.actions.act_window" id="action_window_mode_transport">
+      <field name="name">Mode Transport</field>
+      <field name="res_model">mode.transport</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="config_menu_mode_transport" name="Mode Transport" parent="configuration_menu" sequence="6" action="action_window_mode_transport"/>
+
+  </data>
+</odoo>

@@ -1,0 +1,32 @@
+<odoo>
+  <data>
+    <record id="view_product_template_inherit" model="ir.ui.view">
+        <field name="name">view.product.template.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <!-- <xpath expr="//notebook/page[1]/field[@name='order_line']/form/group/group[1]/label[1]" position="before">
+                <field name="skep_pib_ids" widget="many2many_tags"/>
+            </xpath> -->
+            <xpath expr="//notebook/page[@name='general_information']" position="after">
+                    <page name="history_replacement" string="History Replacement">
+                        <field name="history_replacement_ids" context="{'default_product_tmpl_id':id}" widget="one2many">
+                            <tree editable="bottom" default_order="id asc">
+                                <!-- <field name="sequence" readonly="1"/> -->
+                                <field name="desc" required="1" placeholder="Description..."/>
+                                <field name="default_code" readonly="1" placeholder="PN"/>
+                                <field name="product_id"/>
+                                <field name="start_date" widget="date"/>
+                                <field name="end_date" widget="date"/>
+                                <field name="is_replacement" widget="toggle_button"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+        </field>
+    </record>
+</data>
+</odoo>
+
+
+        

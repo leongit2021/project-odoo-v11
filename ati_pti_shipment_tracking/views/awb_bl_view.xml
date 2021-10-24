@@ -1,0 +1,334 @@
+<odoo>
+  <data>
+    <!-- awb/bl -->
+    <record model="ir.ui.view" id="awb_bl_form">
+        <field name="name">awb.bl.form</field>
+        <field name="model">awb.bl</field>
+        <field name="arch" type="xml">
+            <form string="AWB/BL">
+                <header>
+                    <!-- <button name="action_draft" string="Draft" attrs="{'invisible': [('state','!=','cancelled')]}" type="object" class="oe_highlight"/> -->
+                    <button name="action_validate" string="Validate" attrs="{'invisible': [('state','!=','draft')]}" type="object" class="oe_highlight"/>
+                    <button name="action_done" string="Done" attrs="{'invisible': [('state','!=','validate')]}" type="object" class="oe_highlight"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="awb_bl_ids" domain="[('state','=','logistic')]" required="1" attrs="{'readonly': [('state','=','done')]}" string="Shipping Instruction" options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="partner_id" domain="[('industry_id.name','=ilike','Transportation')]" attrs="{'readonly': [('state','=','done')]}"/>
+                            <field name="bill_type" required="1"/>
+                            <field name="created_by" readonly="1"/>
+                            <field name="create_date" string="Create Date" readonly="1"/>
+                        </group>
+                        <group>
+                            
+                        </group>
+                        <group name="awb" string="Air Waybill" attrs="{'invisible': [('bill_type','not in',('awb','awb_bl'))],'readonly': [('state','=','done')]}">
+                            <field name="mode_transport" attrs="{'readonly': [('state','=','done')]}" placeholder="Ex: Air, Sea, Land..."/>
+                            <field name="mawb" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="hawb" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="job_ref" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="document_date" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="number_of_boxes" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="currency_id" attrs="{'readonly': [('state','!=','draft')]}" options="{'no_create_edit': True,'no_edit': True,'no_open': True}"/>
+                            <field name="total_amount" string="Invoice Total Amt" readonly="1" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <label for="awb_gross_weight" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <div>
+                                <field name="awb_gross_weight" class="oe_inline" attrs="{'readonly': [('state','!=','draft')]}"/> K
+                                <!-- <field name="awb_gross_uom_id" attrs="{'readonly': [('state','=','done')]}" widget="selection" class="oe_inline"/> -->
+                            </div>
+                            <label for="chargeable_weight"/>
+                            <div>
+                                <field name="chargeable_weight" attrs="{'readonly': [('state','!=','draft')]}" class="oe_inline"/> K
+                                <!-- <field name="changeable_uom_id" attrs="{'readonly': [('state','=','done')]}" widget="selection" class="oe_inline"/> -->
+                            </div>
+                        </group>
+                        <group name="bl" string="Bill of Lading" attrs="{'invisible': [('bill_type','not in',('bl','awb_bl'))], 'readonly': [('state','!=','draft')]}">
+                            <!-- <field name="carrier_partner_id" domain="[('industry_id.name','=ilike','Transportation')]" attrs="{'readonly': [('state','!=','draft')]}"/> -->
+                            <field name="job_ref" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="bl_no"/>
+                            <field name="quantity_of_package" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="kind_of_package" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <label for="bl_gross_weight" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <div>
+                                <field name="bl_gross_weight" class="oe_inline" attrs="{'readonly': [('state','!=','draft')]}"/> KG
+                                <!-- <field name="bl_gross_uom_id" attrs="{'readonly': [('state','=','done')]}" widget="selection" class="oe_inline"/> -->
+                            </div>
+                            <label for="measurement"/>
+                            <div>
+                                <field name="measurement" attrs="{'readonly': [('state','!=','draft')]}" class="oe_inline"/> M3
+                                <!-- <field name="measurement_uom_id" attrs="{'readonly': [('state','=','done')]}" widget="selection" class="oe_inline"/> -->
+                            </div>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Invoice Detail">
+                            <field name="awb_bl_line_ids">
+                                <tree editable="buttom">
+                                    <!-- <field name="shipping_instruction_id" domain="[('id','in',parent.awb_bl_ids)]" options="{'no_create':True,'no_create_edit':True}"/> -->
+                                    <field name="box_number"/>
+                                    <field name="box_id" domain="[('invoice_line_id','=',parent.awb_bl_ids)]" options="{'no_create':True,'no_create_edit':True}"/>
+                                    <!-- <field name="load_code"/> -->
+                                    <field name="purchase_id" invisible="1" options="{'no_create':True,'no_create_edit':True}"/>
+                                    <field name="client_order_ref" readonly="1"/>
+                                    <field name="pti_ref" readonly="0"/>
+                                    <field name="partner_ref" readonly="1"/>
+                                    <field name="invoice" string="Invoice Amt" sum="Invoice Amt"/>
+                                    <field name="gross_wt" string="Gross Wt (L)" sum="Gross Wt (L)"/>
+                                    <field name="volume_wt" string="Volume Wt (CuFt)" sum="Volume Wt (CuFt)"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Flight Info" name="flight_info" attrs="{'invisible': [('bill_type','not in',('awb'))]}">
+                            <field name="awb_transit_history_ids">
+                                <tree editable="buttom">
+                                    <field name="trasport_name" required="1" string="Airline"/>
+                                    <field name="transport_number" required="1" string="Flight Number"/>
+                                    <field name="departure" required="1" string="Airport of Departure"/>
+                                    <field name="destination" required="1" string="Airport of Destination"/>
+                                    <field name="final_destination" required="1" string="Final Destination"/>
+                                    <field name="departure_date" string="Departure"/>
+                                    <field name="arrival_date" string="Arrival"/>
+                                    <field name="remarks"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Voyage Info" name="voyage_info" attrs="{'invisible': ['|',('bill_type','not in',('bl')),('bill_type','=',False)]}">
+                            <field name="bl_transit_history_ids">
+                                <tree editable="buttom">
+                                    <field name="carrier_name" required="1" string="Carrier"/>
+                                    <field name="trasport_name" required="1" string="Vessel Name"/>
+                                    <field name="transport_number" required="1" string="Voyage Number"/>
+                                    <field name="departure" required="1" string="Port of Loading"/>
+                                    <field name="destination" required="1" string="Port of Discharging"/>
+                                    <field name="final_destination" required="1" string="Final Destination"/>
+                                    <field name="departure_date" string="Departure"/>
+                                    <field name="arrival_date" string="Arrival"/>
+                                    <field name="remarks"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Document Checklist" name="document_checklist">
+                            <field name="document_ids">
+                                <tree editable="buttom">
+                                    <field name="document_check_id" required="1"/>
+                                    <field name="remarks"/>
+                                    <field name="date"/>
+                                    <field name="attachment" required="1" string="File"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="awb_bl_form2">
+        <field name="name">awb.bl.form2</field>
+        <field name="model">awb.bl</field>
+        <field name="arch" type="xml">
+            <form string="AWB/BL" create="false" edit="false" delete="false">
+                <header>
+                    <!-- <button name="action_draft" string="Draft" attrs="{'invisible': [('state','!=','cancelled')]}" type="object" class="oe_highlight"/> -->
+                    <!-- <button name="action_done" string="Done" attrs="{'invisible': [('state','!=','draft')]}" type="object" class="oe_highlight"/> -->
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label string="Document No"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="awb_bl_ids" required="1" attrs="{'readonly': [('state','=','done')]}" string="Shipping Invoice" options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="bill_type" required="1"/>
+                            <field name="created_by" readonly="1"/>
+                        </group>
+                        <group>
+                            
+                        </group>
+                        <group name="awb" string="AWB" attrs="{'invisible': [('bill_type','not in',('awb'))],'readonly': [('state','=','done')]}">
+                            <field name="partner_id" domain="[('industry_id.name','=ilike','Transportation')]" attrs="{'readonly': [('state','=','done')]}"/>
+                            <field name="mode_transport" attrs="{'readonly': [('state','=','done')]}" placeholder="Ex: Air, Sea, Land..."/>
+                            <field name="mawb" attrs="{'readonly': [('state','=','done')]}"/>
+                            <field name="hawb" attrs="{'readonly': [('state','=','done')]}"/>
+                            <field name="job_ref" attrs="{'readonly': [('state','=','done')]}"/>
+                            <field name="document_date" attrs="{'readonly': [('state','=','done')]}"/>
+                            <field name="number_of_boxes" attrs="{'readonly': [('state','=','done')]}"/>
+                            <field name="currency_id" attrs="{'readonly': [('state','=','done')]}" options="{'no_create_edit': True,'no_edit': True,'no_open': True}"/>
+                            <field name="total_amount" string="Invoice Total Amt" attrs="{'readonly': [('state','=','done')]}" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <label for="awb_gross_weight" attrs="{'readonly': [('state','=','done')]}"/>
+                            <div>
+                                <field name="awb_gross_weight" class="oe_inline" attrs="{'readonly': [('state','=','done')]}"/> K
+                                <!-- <field name="awb_gross_uom_id" attrs="{'readonly': [('state','=','done')]}" widget="selection" class="oe_inline"/> -->
+                            </div>
+                            <label for="chargeable_weight"/>
+                            <div>
+                                <field name="chargeable_weight" attrs="{'readonly': [('state','=','done')]}" class="oe_inline"/> K
+                                <!-- <field name="changeable_uom_id" attrs="{'readonly': [('state','=','done')]}" widget="selection" class="oe_inline"/> -->
+                            </div>
+                        </group>
+                        <group name="bl" string="BL" attrs="{'invisible': [('bill_type','not in',('bl'))], 'readonly': [('state','=','done')]}">
+                            <field name="create_date" readonly="1"/>
+                            <field name="carrier_partner_id" domain="[('industry_id.name','=ilike','Transportation')]" attrs="{'readonly': [('state','=','done')]}"/>
+                            <field name="bl_no"/>
+                            <field name="quantity_of_package" attrs="{'readonly': [('state','=','done')]}"/>
+                            <field name="kind_of_package" attrs="{'readonly': [('state','=','done')]}"/>
+                            <label for="bl_gross_weight" attrs="{'readonly': [('state','=','done')]}"/>
+                            <div>
+                                <field name="bl_gross_weight" class="oe_inline" attrs="{'readonly': [('state','=','done')]}"/> KG
+                                <!-- <field name="bl_gross_uom_id" attrs="{'readonly': [('state','=','done')]}" widget="selection" class="oe_inline"/> -->
+                            </div>
+                            <label for="measurement"/>
+                            <div>
+                                <field name="measurement" attrs="{'readonly': [('state','=','done')]}" class="oe_inline"/> M3
+                                <!-- <field name="measurement_uom_id" attrs="{'readonly': [('state','=','done')]}" widget="selection" class="oe_inline"/> -->
+                            </div>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="AWB/BL Detail">
+                            <field name="awb_bl_line_ids" readonly="1">
+                                <tree editable="buttom">
+                                    <!-- <field name="shipping_instruction_id" domain="[('id','in',parent.awb_bl_ids)]" options="{'no_create':True,'no_create_edit':True, 'no_open': True}"/> -->
+                                    <field name="box_number"/>
+                                    <field name="box_id" options="{'no_create':True,'no_create_edit':True}"/>
+                                    <!-- <field name="load_code"/> -->
+                                    <field name="purchase_id" invisible="1" options="{'no_create':True,'no_create_edit':True}"/>
+                                    <field name="client_order_ref" readonly="1"/>
+                                    <field name="pti_ref" readonly="0"/>
+                                    <field name="partner_ref" readonly="1"/>
+                                    <field name="invoice"/>
+                                    <field name="gross_wt"/>
+                                    <field name="volume_wt"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Flight Info" name="flight_info" attrs="{'invisible': [('bill_type','not in',('awb'))]}">
+                            <field name="awb_transit_history_ids" readonly="1">
+                                <tree editable="buttom">
+                                    <field name="trasport_name" required="1" string="Airline"/>
+                                    <field name="transport_number" required="1" string="Flight Number"/>
+                                    <field name="departure" required="1" string="Airport of Departure"/>
+                                    <field name="destination" required="1" string="Airport of Destination"/>
+                                    <field name="final_destination" required="1" string="Final Destination"/>
+                                    <field name="departure_date" string="Departure"/>
+                                    <field name="arrival_date" string="Arrival"/>
+                                    <field name="remarks"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Voyage Info" name="voyage_info" attrs="{'invisible': ['|',('bill_type','not in',('bl')),('bill_type','=',False)]}">
+                            <field name="bl_transit_history_ids" readonly="1">
+                                <tree editable="buttom">
+                                    <field name="trasport_name" required="1" string="Vessel Name"/>
+                                    <field name="transport_number" required="1" string="Voyage Number"/>
+                                    <field name="departure" required="1" string="Port of Loading"/>
+                                    <field name="destination" required="1" string="Port of Discharging"/>
+                                    <field name="final_destination" required="1" string="Final Destination"/>
+                                    <field name="departure_date" string="Departure"/>
+                                    <field name="arrival_date" string="Arrival"/>
+                                    <field name="remarks"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Document Checklist" name="document_checklist">
+                            <field name="document_ids" readonly="1">
+                                <tree editable="buttom">
+                                    <field name="document_check_id" required="1"/>
+                                    <field name="remarks"/>
+                                    <field name="date"/>
+                                    <field name="attachment" required="1" string="File"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="awb_bl_tree">
+        <field name="name">awb.bl.tree</field>
+        <field name="model">awb.bl</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="created_by"/>
+                <field name="mode_transport"/>
+                <field name="transporter"/>
+                <field name="date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="awb_bl_tree2">
+        <field name="name">awb.bl.tree2</field>
+        <field name="model">awb.bl</field>
+        <field name="arch" type="xml">
+            <tree create="false" edit="false">
+                <field name="name"/>
+                <field name="created_by"/>
+                <field name="mode_transport"/>
+                <field name="transporter"/>
+                <field name="date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_window_awb_bl">
+        <field name="name">AWB/BL</field>
+        <field name="res_model">awb.bl</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- commercial.invoice -->
+    <record model="ir.ui.view" id="commercial_invoice_tree">
+        <field name="name">commercial.invoice.tree</field>
+        <field name="model">commercial.invoice</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="pickup_goods_id"/>
+                <field name="purchase_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_commercial_invoice">
+        <field name="name">Commercial Invoice</field>
+        <field name="res_model">commercial.invoice</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_awb_bl" name="AWB/BL" parent="ati_pti_shipment_tracking.menu_instruction_pickup_goods" sequence="7" action="action_window_awb_bl" groups="ati_pti_shipment_tracking.group_shipment_user_forwarder,ati_pti_shipment_tracking.group_shipment_user_log"/>
+    <menuitem id="config_menu_commercial_invoice" name="Commercial Invoice" parent="ati_pti_shipment_tracking.configuration_menu" sequence="19" action="action_commercial_invoice"/>
+
+</data>
+</odoo>
+
+
+        

@@ -1,0 +1,45 @@
+<odoo>
+  <data>
+    <!-- view definition -->
+    
+    <record model="ir.ui.view" id="view_bc_type_form">
+      <field name="name">view.bc.type.form</field>
+      <field name="model">bc.bc</field>
+      <field name="arch" type="xml">
+        <form>
+            <group>
+                <group>
+                    <field name="name"/>
+                    <field name="code" placeholder="Default Code: BC16, BC20, BC28"/>
+                </group>
+                <group>
+                </group>
+            </group>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_bc_type_tree">
+      <field name="name">view.bc.type.tree</field>
+      <field name="model">bc.bc</field>
+      <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="code"/>
+        </tree>
+      </field>
+    </record>
+   
+
+    <!-- actions opening views on models -->
+    
+    <record model="ir.actions.act_window" id="action_bc_type">
+      <field name="name">BC Type</field>
+      <field name="res_model">bc.bc</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="config_menu_bc_type" name="BC Type" parent="configuration_menu" sequence="17" action="action_bc_type"/>
+
+  </data>
+</odoo>

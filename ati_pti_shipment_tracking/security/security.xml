@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record model="ir.module.category" id="module_shipment_tracking">
+            <field name="name">Shipment</field>
+            <field name="description">User access level for this module</field>
+            <field name="sequence">15</field>
+        </record>
+        <!--employee-->
+        <record id="group_shipment_user_emp" model="res.groups">
+            <field name="name">Base User</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="category_id" ref="module_shipment_tracking"/>
+            <!-- <field name="users" eval="[(4, ref('base.user_root'))]"/> -->
+        </record>
+
+        <record id="group_shipment_user_sac" model="res.groups">
+            <field name="name">SAC</field>
+            <field name="category_id" ref="module_shipment_tracking"/>
+            <field name="implied_ids" eval="[(4, ref('group_shipment_user_emp'))]"/>
+        </record>
+        <record id="group_shipment_user_spv" model="res.groups">
+            <field name="name">Supervisor SAC</field>
+            <field name="category_id" ref="module_shipment_tracking"/>
+            <field name="implied_ids" eval="[(4, ref('group_shipment_user_emp'))]"/>
+        </record>
+
+        <!-- <record id="group_shipment_user_manager" model="res.groups">
+            <field name="name">Manager</field>
+            <field name="category_id" ref="module_shipment_tracking"/>
+            <field name="implied_ids" eval="[(4, ref('group_shipment_user_spv'))]"/>
+        </record> -->
+
+        <record id="group_shipment_user_log" model="res.groups">
+            <field name="name">Logistics</field>
+            <field name="category_id" ref="module_shipment_tracking"/>
+            <field name="implied_ids" eval="[(4, ref('group_shipment_user_emp'))]"/>
+        </record>
+
+        <record id="group_shipment_user_forwarder" model="res.groups">
+            <field name="name">Forwarder</field>
+            <field name="category_id" ref="module_shipment_tracking"/>
+            <field name="implied_ids" eval="[(4, ref('group_shipment_user_emp'))]"/>
+        </record>
+
+        <!-- invisible basic module odoo -->
+        <!-- <record id="group_base_leaves_st" model="res.groups">
+            <field name="name">Group Leaves</field>
+            <field name="category_id" ref="module_shipment_tracking"/>
+            <field name="implied_ids" eval="[(4, ref('group_shipment_user_emp'))]"/>
+        </record> -->
+
+        
+    </data>
+</odoo>

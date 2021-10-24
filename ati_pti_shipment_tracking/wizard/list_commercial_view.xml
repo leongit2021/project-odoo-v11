@@ -1,0 +1,28 @@
+<odoo>
+    <data>
+        <record id="view_list_commercial_wiz_form" model="ir.ui.view">
+            <field name="name">list.commercial.wizard.form</field>
+            <field name="model">list.commercial.wizard</field>
+            <field name="arch" type="xml">
+                <form string="List Commercial">
+                    <field name="commercial_invoice_ids" options="{'no_create':True, 'no_create_edit': True}"/>
+                    <footer>
+                        <button name="get_commercial" string="Set" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Close" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_list_commercial_wiz" model="ir.actions.act_window">
+            <field name="name">List Commercial</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">list.commercial.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

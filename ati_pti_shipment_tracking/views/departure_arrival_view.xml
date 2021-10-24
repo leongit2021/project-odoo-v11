@@ -1,0 +1,53 @@
+<odoo>
+  <data>
+    <!-- view definition -->
+    
+    <record model="ir.ui.view" id="view_departure_arrival_form">
+      <field name="name">view.departure.arrival.form</field>
+      <field name="model">departure.arrival</field>
+      <field name="arch" type="xml">
+        <form>
+            <group>
+                <group>
+                    <field name="port_type"/>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="city"/>
+                    <field name="state_id"/>
+                    <field name="country_id"/>
+                </group>
+                <group>
+                </group>
+            </group>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_departure_arrival_tree">
+      <field name="name">view.departure.arrival.tree</field>
+      <field name="model">departure.arrival</field>
+      <field name="arch" type="xml">
+        <tree>
+            <field name="port_type"/>
+            <field name="name"/>
+            <field name="code"/>
+            <field name="city"/>
+            <field name="state_id"/>
+            <field name="country_id"/>
+        </tree>
+      </field>
+    </record>
+   
+
+    <!-- actions opening views on models -->
+    
+    <record model="ir.actions.act_window" id="action_departure_arrival">
+      <field name="name">Port</field>
+      <field name="res_model">departure.arrival</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="config_menu_departure_arrival" name="Master Port" parent="configuration_menu" sequence="16" action="action_departure_arrival"/>
+
+  </data>
+</odoo>

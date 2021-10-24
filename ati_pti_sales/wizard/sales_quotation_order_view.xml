@@ -1,0 +1,59 @@
+<odoo>
+    <data>
+        <record id="view_sqo_form_wizard" model="ir.ui.view">
+            <field name="name">view.sales.quotation.order.wizard</field>
+            <field name="model">sales.quotation.order.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Sales Quotation/Order Reports">
+                    <p class="oe_grey">
+                        You will download Sales Quotation/Order Reports???.
+                    </p>
+                    <group>
+                            <label for="date_from" string="Date From"/>
+                            <div>
+                                <field name="date_from" class="oe_inline" placeholder="Date From..."/>
+                                <label string=" - " class="oe_inline"/>
+                                <field name="date_to" class="oe_inline" placeholder="Date To..."/>
+                            </div>
+                            <field name="team_ids" required="0" widget="many2many_tags" options="{'no_create':True,'no_create_edit': True}" placeholder="Filter by Sales Channel"/>
+                            <field name="partner_ids" required="0" widget="many2many_tags" options="{'no_create':True,'no_create_edit': True}" placeholder="Filter by Customer"/>
+                            <field name="status_ids" required="0" widget="many2many_tags" options="{'no_create':True, 'no_create_edit':True}" placeholder="Filter by Status"/>
+                    </group>
+                    <group>
+                            <field name="is_detail" widget="toggle_button"/>
+                    </group>
+                    <notebook invisible="1">
+                        <page string="Info for Sales Channel/Customer before print" name="quotation_and_order">
+                            <field name="wiz_line_ids" widget="one2many">
+                                <tree editable="buttom">
+                                    <field name="team_ids" string="Sales Channel" widget="many2many_tags" options="{'no_create':True,'no_create_edit': True,'color_field':'color'}"/>
+                                    <field name="partner_ids" string="Customer" widget="many2many_tags" options="{'no_create':True,'no_create_edit': True,'color_field':'color'}"/>
+                                    <field name="so_ids" string="Sales Quotation/Order Group" widget="many2many_tags" options="{'no_create':True,'no_create_edit': True,'color_field':'color'}"/>
+                                    <field name="status_ids" string="Status" widget="many2many_tags" options="{'no_create':True,'no_create_edit': True,'color_field':'color'}"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                    <footer>
+                        <button name="generate" string="Print" type="object" class="oe_highlight"/>
+                        <button string="Close" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_sqo" model="ir.actions.act_window">
+            <field name="name">Sales Quotation/Order Report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sales.quotation.order.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_sqo_form_wizard"/>
+            <field name="target">new</field>
+            <!-- <field name="multi">True</field> -->
+        </record>
+            
+        <menuitem id="sqo_report" name="Sales Quotation/Order Report" parent="sale.menu_sale_report" sequence="8" action="action_sqo"/>
+    
+    </data>
+</odoo>

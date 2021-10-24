@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <menuitem id="shipment_tracking_menu" 
+            name="Shipment" 
+            web_icon="ati_pti_shipment_tracking,static/src/img/icon.jpg"
+            sequence="51"
+            groups="ati_pti_shipment_tracking.group_shipment_user_emp,ati_pti_shipment_tracking.group_shipment_user_sac,ati_pti_shipment_tracking.group_shipment_user_spv,ati_pti_shipment_tracking.group_shipment_user_log,ati_pti_shipment_tracking.group_shipment_user_forwarder" 
+            />
+
+        <menuitem
+            id="goods_ordering_menu"
+            name="Goods Ordering"
+            parent="shipment_tracking_menu"
+            sequence="2"
+        />
+
+        <!--  -->
+        <menuitem
+            id="delivery_and_custom_clearence_menu"
+            name="Custom Clearance"
+            parent="shipment_tracking_menu"
+            sequence="3"
+            groups="ati_pti_shipment_tracking.group_shipment_user_forwarder,ati_pti_shipment_tracking.group_shipment_user_log"
+        />
+
+        <!--  -->
+        <!-- <menuitem
+            id="goods_receiving_menu"
+            name="Goods Receiving and Delivery"
+            parent="shipment_tracking_menu"
+            sequence="4"
+        />
+        <menuitem id="menu_goods_receiving" name="Goods Receiving" parent="goods_receiving_menu" sequence="1" /> -->
+        
+        <!-- configuration -->
+        <menuitem
+            id="configuration_menu"
+            name="Configuration"
+            parent="shipment_tracking_menu"
+            sequence="7"
+            groups="ati_pti_shipment_tracking.group_shipment_user_spv,ati_pti_shipment_tracking.group_shipment_user_log"
+        />
+        
+        <!-- AWB Bound -->
+        <!--  -->
+        <menuitem
+            id="operation_menu_st"
+            name="Operation"
+            parent="shipment_tracking_menu"
+            sequence="6"
+            groups="ati_pti_shipment_tracking.group_shipment_user_forwarder,ati_pti_shipment_tracking.group_shipment_user_log"
+        />
+       
+    </data>
+</odoo>

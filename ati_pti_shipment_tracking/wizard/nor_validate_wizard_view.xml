@@ -1,0 +1,52 @@
+<odoo>
+    <data>
+        <record id="view_nor_validate_wizard_form" model="ir.ui.view">
+            <field name="name">nor.validate.wizard.form</field>
+            <field name="model">nor.validate.wizard</field>
+            <field name="arch" type="xml">
+                <form string="NOR">
+                    <p style="color:red;">
+                        <i>Please check quantity in Excel file : Existing quantity in system does not equal to quantity  in upload file.</i>
+                    </p>
+                    <group>
+                        <field name="nor_goods_id" invisible="1" options="{'no_create':True, 'no_create_edit': True}" placeholder="Filter by Purchase Order..."/>
+                    </group>
+                    <group>    
+                    </group>
+                    <notebook>
+                        <page string="NOR Validation">
+                         <field name="nor_ids">
+                            <tree editable="bottom" >
+                                <field name="goods_id" invisible="1"/>
+                                <field name="purchase_id" invisible="1" force_save="1"/>
+                                <field name="sales_order_no" readonly="1"/>
+                                <field name="load_code" readonly="1"/>
+                                <field name="item_code" readonly="1"/>
+                                <field name="position" readonly="1"/>
+                                <field name="initial_qty" readonly="1"/>
+                                <field name="nor_qty"/>
+                                <field name="product_uom" readonly="1"/>
+                            </tree>
+                         </field>
+                        </page>
+                    </notebook>
+                    <footer>
+                        <button name="validate" string="Validate" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Close" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_nor_validate_wizard" model="ir.actions.act_window">
+            <field name="name">List NOR</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">nor.validate.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

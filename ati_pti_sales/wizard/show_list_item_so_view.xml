@@ -1,0 +1,54 @@
+<odoo>
+    <data>
+        <record id="view_item_so_wiz" model="ir.ui.view">
+            <field name="name">view.item.so.wiz</field>
+            <field name="model">show.item.so.wiz</field>
+            <field name="arch" type="xml">
+                <form string="Quotation/Order">
+                    <group>
+                        <field name="skep_id" invisible="1" readonly="1" force_save="1"/>
+                    </group>
+                    <notebook>
+                        <page string="SO Detail">
+                            <field name="is_select" style="border:2px solid Tomato;" string="Select All/Not Select All SO Item?"/> Select All/Not Select All SO Item?
+                            <field name="order_ids" widget="one2many">
+                                <tree editable="buttom" create="false" edit="false" delete="false">
+                                    <field name="order_id" invisible="1"/>
+                                    <field name="seq" readonly="0"/>
+                                    <field name="is_numbered" style="border:2px solid Tomato;" string="Tick" widget="toggle_button"/>
+                                    <field name="part_number" readonly="1"/>
+                                    <field name="product_id" readonly="0" options="{'no_create':True,'no_create_edit':True}"/>
+                                    <field name="skep_pib_ids" readonly="0" widget="many2many_tags" options="{'no_create':True,'no_create_edit':True}"/>
+                                    <field name="product_uom_qty" readonly="0"/>
+                                    <field name="outstanding_qty" readonly="0"/>
+                                    <field name="product_uom" readonly="1"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="price_unit" invisible="1"/>
+                                    <field name="unit_skep_item_value" invisible="1"/>
+                                    <field name="count_tkdn"/>
+                                    <field name="price_subtotal" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                    <footer>
+                        <button name="set_number" string="Set" type="object" class="oe_highlight"/>
+                        <button string="Close" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_list_item_so_wiz" model="ir.actions.act_window">
+            <field name="name">Item Quotation/Order</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">show.item.so.wiz</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <!-- <field name="view_id" ref="view_item_so_wiz"/> -->
+            <field name="target">new</field>
+            <!-- <field name="multi">True</field> -->
+        </record>
+            
+    </data>
+</odoo>

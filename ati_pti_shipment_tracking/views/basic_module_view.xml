@@ -1,0 +1,13 @@
+<odoo>
+  <data>
+
+    <menuitem
+            name="Leaves"
+            id="hr_holidays.menu_hr_holidays_root"
+            sequence="95"
+            web_icon="hr_holidays,static/description/icon.png"
+            groups="ati_pti_shipment_tracking.group_base_leaves_st"/>
+
+
+  </data>
+</odoo>

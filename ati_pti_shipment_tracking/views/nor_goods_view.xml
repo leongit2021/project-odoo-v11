@@ -1,0 +1,158 @@
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="nor_goods_form">
+        <field name="name">nor.goods.form</field>
+        <field name="model">nor.goods</field>
+        <field name="arch" type="xml">
+            <form string="Nor or Goods Collect">
+                <header>
+                    <button name="action_draft" string="Draft" attrs="{'invisible': [('state','!=','cancelled')]}" type="object" class="oe_highlight"/>
+                    <button name="action_validate" string="Validate" attrs="{'invisible': [('state','!=','draft')]}" type="object" class="oe_highlight"/>
+                    <button name="action_cancel" string="Cancel" attrs="{'invisible': [('state','in',('draft','cancelled'))]}" type="object" class="oe_inline"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="created_by" readonly="1"/>
+                            <field name="upload_date" required="1" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+                        </group>
+                        <group>
+                            <field name="book" filename="book_filename" attrs="{'readonly': [('state','not in',['draft'])]}" placeholder="Upload XLS file..." widget="binary"/>
+	            	        <field name="book_filename" invisible="1" attrs="{'readonly': [('state','not in',['draft'])]}"/>    
+                            <button name="action_import_nor" attrs="{'invisible': [('state','not in',('draft'))]}" string="Import NOR" type="object" class="oe_edit_only" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="NOR Detail">
+                            <button name="action_delete_nor_detail" string="⇒ delete all checked" type="object" class="oe_inline oe_link oe_right" groups=""/>
+                            <field name="goods_ids" >
+                                <tree editable="buttom" create="false" delete="false" decoration-danger="purchase_id == False or product_id == False">
+                                    <field name="is_deleted" string="Checked?" widget="toggle_button"/>
+                                    <field name="sequence"/>
+                                    <field name="sales_order_no"/>
+                                    <field name="purchase_id" domain="[('partner_ref','=',sales_order_no)]" options="{'no_create':True,'no_create_edit':True}"/>
+                                    <field name="position" style="text-align: center;" />
+                                    <field name="product_id" options="{'no_create':True,'no_create_edit':True}"/>
+                                    <field name="item_code"/>
+                                    <field name="item_desc"/>
+                                    <field name="nor_qty"/>
+                                    <field name="product_uom" options="{'no_create':True,'no_create_edit':True}" force_save="1"/>
+                                    <field name="sales_value"/>
+                                    <field name="staged_dt"/>
+                                    <field name="today"/>
+                                    <field name="days_staged"/>
+                                    <field name="load_code"/>
+                                    <field name="nor_state"/>
+                                    <field name="nor_date"/>
+                                    <field name="nor_comment"/>
+                                </tree>
+                            </field>
+                        </page>
+                        
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+<!-- list upload nor -->
+    <record model="ir.ui.view" id="nor_goods_tree">
+        <field name="name">nor.goods.tree</field>
+        <field name="model">nor.goods</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state=='draft'" decoration-warning="state=='cancelled'" decoration-success="state=='validate'">
+                <field name="name" string="Reference (NOR ID)"/>
+                <field name="write_uid" string="Upload By"/>
+                <field name="upload_date"/>
+                <field name="book_filename" string="File Name"/>
+                <field name="state" string="Status"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_nor_goods">
+        <field name="name">NOR</field>
+        <field name="res_model">nor.goods</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- all nor -->
+    <record model="ir.ui.view" id="nor_goods_line_tree">
+        <field name="name">nor.goods.line.tree</field>
+        <field name="model">nor.goods.line</field>
+        <field name="arch" type="xml">
+            <tree create="false" string="ALL NOR" decoration-info="nor_state == 'yes'" decoration-muted="nor_state == 'no'">
+                <field name="sequence"/>
+                <field name="name"/>
+                <field name="sales_order_no"/>
+                <field name="position"/>
+                <field name="product_id"/>
+                <field name="item_code"/>
+                <field name="item_desc"/>
+                <field name="nor_qty"/>
+                <field name="product_uom"/>
+                <field name="sales_value" sum="sales_value"/>
+                <field name="staged_dt"/>
+                <field name="today"/>
+                <field name="days_staged"/>
+                <field name="load_code"/>
+                <field name="nor_state"/>
+                <field name="nor_date"/>
+                <field name="nor_comment"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="nor_goods_line_filter" model="ir.ui.view">
+        <field name="name">nor.goods.line.filter</field>
+        <field name="model">nor.goods.line</field>
+        <field name="arch" type="xml">
+            <search string="NOR Search">
+                <field name="sales_order_no" />
+                <field name="goods_id"/>
+                <field name="name"/>
+                <separator/>
+                <filter string="NOR State (Yes)" domain="[('nor_state', '=', 'yes')]" />
+                <separator/>
+                <filter string="NOR State (No)" domain="[('nor_state', '=', 'no')]" />
+                <separator/>
+                <!-- <filter string="My Attendances" domain="[('employee_id.user_id.id', '=', uid)]" /> -->
+                <group expand="0" string="Group By">
+                    <filter name="sales_order_no" string="Sales Order Number" context="{'group_by':'sales_order_no'}"/>
+                    <filter name="goods_id" string="NOR" context="{'group_by':'goods_id'}"/>
+                    <filter name="name" string="NOR Name" context="{'group_by':'name'}"/>
+                    <separator/>
+                    <!-- <filter name="groupby_name" string="Month" context="{'group_by':'check_in'}"/> -->
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_all_nor_goods">
+        <field name="name">NOR</field>
+        <field name="res_model">nor.goods.line</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="context">{"search_default_name":1,"search_default_sales_order_no":1}</field>
+        <field name="view_id"></field>  <!-- force empty -->
+    </record>
+    
+    <menuitem id="menu_nor" name="Upload NOR" parent="goods_ordering_menu" sequence="1" action="action_nor_goods" groups="ati_pti_shipment_tracking.group_shipment_user_sac"/>
+    <menuitem id="menu_history_all_nor" name="History" parent="goods_ordering_menu" sequence="4" groups="ati_pti_shipment_tracking.group_shipment_user_sac"/>
+    <menuitem id="menu_all_nor" name="All NOR" parent="menu_history_all_nor" sequence="6" action="action_all_nor_goods"/>
+
+</data>
+</odoo>
+
+
+        

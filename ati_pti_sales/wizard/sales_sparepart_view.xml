@@ -1,0 +1,80 @@
+<odoo>
+    <data>
+        <record id="view_sparepart_form_wizard" model="ir.ui.view">
+            <field name="name">view.sales.sparepart.wizard</field>
+            <field name="model">sales.sparepart.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Sales Sparepart Reports">
+                    <p class="oe_grey">
+                        You will download Sales Sparepart Reports???.
+                    </p>
+                    <group>
+                            <label for="date_from" string="Date From"/>
+                            <div>
+                                <field name="date_from" class="oe_inline" placeholder="Date From..."/>
+                                <label string=" - " class="oe_inline"/>
+                                <field name="date_to" class="oe_inline" placeholder="Date To..."/>
+                            </div>
+                            <field name="so_ids" required="1" domain="[('create_date','&gt;=',date_from),('create_date','&lt;=',date_to)]" widget="many2many_tags" options="{'no_create':True,'no_create_edit':True}" placeholder="Select data Quotation or Order..."/>
+                    </group>
+                    <group>
+                    </group>
+                    <footer>
+                        <button name="generate" string="Print" type="object" class="oe_highlight"/>
+                        <button string="Close" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_sparepart" model="ir.actions.act_window">
+            <field name="name">Sales Sparepart Report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sales.sparepart.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_sparepart_form_wizard"/>
+            <field name="target">new</field>
+            <!-- <field name="multi">True</field> -->
+        </record>
+
+        <record id="view_skep_line_update_form" model="ir.ui.view">
+			<field name="name">update.skep.line</field>
+			<field name="model">update.import.skep.line</field>
+			<field name="arch" type="xml">
+				<form string="Import SKEP Line">
+					<p>
+						Input xls format file
+					</p>
+					<br/>
+					<p><strong>
+						Dengan Column
+					</strong></p><br/>
+					<p><strong>
+						Sequence SO, SKEP No(Header), Qty SKEP, SKEP Amount
+					</strong></p>
+					<group col="1">
+						<field name="file" filename='filename' />
+						<field name="filename" invisible="1" />
+						<field name="skep_id" invisible="1"/>
+					</group>
+					<footer>
+						<button name="action_update_import_confirm" string="_Import" type="object" class="btn-primary" />
+						<button string="_Cancel" class="btn-default" special="cancel" />
+					</footer>
+				</form>
+			</field>
+		</record>
+
+		<record id="action_update_skep_line" model="ir.actions.act_window">
+			<field name="name">Update SKEP Lines</field>
+			<field name="res_model">update.import.skep.line</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="target">new</field>
+		</record>
+            
+        <menuitem id="sparepart_report" name="Sales Sparepart Report" parent="sale.menu_sale_report" sequence="9" action="action_sparepart"/>
+    
+    </data>
+</odoo>

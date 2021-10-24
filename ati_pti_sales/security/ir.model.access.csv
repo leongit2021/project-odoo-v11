@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sqo_state,ati_pti_sales.sqo.state,model_sqo_state,,1,1,1,0
+access_skep_pib,ati_pti_sales.skep.pib,model_skep_pib,base.group_user,1,1,1,1
+access_skep_line,ati_pti_sales.skep.line,model_skep_line,base.group_user,1,1,1,1
+access_pib_pib,ati_pti_sales.pib.pib,model_pib_pib,base.group_user,1,1,1,1
+access_pib_line,ati_pti_sales.pib.line,model_pib_line,base.group_user,1,1,1,1
+access_product_history_replacement,product_history_replacement.user,model_product_history_replacement,base.group_user,1,1,1,1

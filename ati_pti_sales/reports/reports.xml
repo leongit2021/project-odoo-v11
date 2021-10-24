@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <report 
+        id="ati_pti_sales.sales_sqo_slsx" 
+        string="Sales Quotation/Order Report" 
+        model="sales.quotation.order.wizard"
+        auto="True"
+        report_type="xlsx" 
+        name="ati_pti_sales.sales_sqo_xlsx"
+        file="Sales Quotation/Order" 
+        attachment_use="False" 
+        />
+
+    <report 
+        id="ati_pti_sales.sales_sparepart_xlsx" 
+        string="Sales Sparepart Report" 
+        model="sales.sparepart.wizard"
+        auto="True"
+        report_type="xlsx" 
+        name="ati_pti_sales.sales_sparepart_xlsx"
+        file="Sales Sparepart" 
+        attachment_use="False" 
+        />
+
+    <report 
+        id="ati_pti_sales.sales_due_delivery_xlsx" 
+        string="Due Delivery Report" 
+        model="sales.delivery.order.wizard"
+        auto="True"
+        report_type="xlsx" 
+        name="ati_pti_sales.sales_due_delivery_xlsx"
+        file="Due Delivery" 
+        attachment_use="False" 
+        />
+
+    <report 
+        id="ati_pti_sales.dashboard_sparepart_div21_xlsx" 
+        string="Dasboard Detail Spare Part Div 21" 
+        model="dashboard.detail.sparepart.div"
+        auto="True"
+        report_type="xlsx" 
+        name="ati_pti_sales.dashboard_sparepart_div21_xlsx"
+        file="Dasboard Detail Spare Part Div 21" 
+        attachment_use="False" 
+        />
+
+    <report 
+        id="ati_pti_sales.export_import_product_xlsx" 
+        string="Export Product" 
+        model="export.import.product.wiz"
+        auto="True"
+        report_type="xlsx" 
+        name="ati_pti_sales.export_import_product_xlsx"
+        file="Export Product" 
+        attachment_use="False" 
+        />
+
+    <report 
+        id="ati_pti_sales.management_xlsx" 
+        string="Management Report" 
+        model="management.report.wizard"
+        auto="True"
+        report_type="xlsx" 
+        name="ati_pti_sales.management_xlsx"
+        file="Management Report" 
+        attachment_use="False" 
+        />
+
+
+    <!-- <report string  = "Sales Quotation/Order Report"
+                model   = "sales.quotation.order.wizard"
+                auto    = "True"
+                report_type = "xlsx"
+                name    = "report_sales_qo_xlsx"
+                id      = "report_sales_qo_xlsx"
+                menu    = "False"
+        /> -->
+</odoo>

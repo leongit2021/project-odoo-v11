@@ -1,0 +1,35 @@
+<odoo>
+    <data>
+        <record id="view_show_skep_pib_form_wizard" model="ir.ui.view">
+            <field name="name">view.show.skep.pib.wizard</field>
+            <field name="model">show.skep.pib.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Determination of SKEP/PIB">
+                    <group>
+                        <notebook>
+                            <page string="SKEP/PIB">
+                                <field name="skep_pib_ids" readonly="1" nolabel="1"/>
+                            </page>
+                        </notebook>
+                    </group>
+                    <group>
+                        
+                    </group>
+                    <footer>
+                        <button string="Close" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_show_skep_pib_wiz" model="ir.actions.act_window">
+            <field name="name">SKEP/PIB</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">show.skep.pib.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

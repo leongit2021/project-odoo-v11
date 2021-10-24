@@ -1,0 +1,77 @@
+<odoo>
+    <data>
+
+        <!-- summary nor goods collect -->
+        <record model="ir.ui.view" id="summary_nor_goods_tree">
+            <field name="name">summary.nor.goods.tree</field>
+            <field name="model">summary.nor.goods</field>
+            <field name="arch" type="xml">
+                <tree create="false" string="Summary" decoration-danger="purchase_id == False or product_id == False">
+                    <field name="sales_order_no" options="{'no_create': True,'no_create_edit':True}"/>
+                    <field name="purchase_id" options="{'no_create': True,'no_create_edit':True}"/>
+                    <field name="position"/>
+                    <field name="product_id"/>
+                    <field name="item_code"/>
+                    <field name="item_desc"/>
+                    <field name="nor_qty"/>
+                    <field name="initial_qty"/>
+                    <field name="pickup_qty"/>
+                    <field name="buffer_qty"/>
+                    <field name="product_qty"/>
+                    <field name="remaining_product_qty"/>
+                    <field name="product_uom"/>
+                    <field name="sales_value" sum="sales_value"/>
+                    <field name="staged_dt"/>
+                    <field name="today"/>
+                    <field name="days_staged"/>
+                    <field name="load_code"/>
+                    <field name="nor_state"/>
+                    <field name="nor_date"/>
+                    <field name="nor_comment"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="summary_nor_goods_filter" model="ir.ui.view">
+            <field name="name">summary.nor.goods.filter</field>
+            <field name="model">summary.nor.goods</field>
+            <field name="arch" type="xml">
+                <search string="Summary Search">
+                    <field name="sales_order_no" />
+                    <separator/>
+                    <filter string="NOR State (Yes)" domain="[('nor_state', '=', 'yes')]" />
+                    <separator/>
+                    <filter string="NOR State (No)" domain="[('nor_state', '=', 'no')]" />
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter name="sales_order_no" string="SP Number" context="{'group_by':'sales_order_no'}"/>
+                        <separator/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_summary_nor_goods">
+            <field name="name">Summary</field>
+            <field name="res_model">summary.nor.goods</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="context">{"search_default_sales_order_no":1}</field>
+            <field name="view_id"></field>  <!-- force empty -->
+        </record>
+
+        <menuitem
+                id="summary_nor_goods_menu"
+                name="Summary"
+                parent="shipment_tracking_menu"
+                sequence="1"
+                action="action_summary_nor_goods"
+                groups="ati_pti_shipment_tracking.group_shipment_user_sac,ati_pti_shipment_tracking.group_shipment_user_log"
+            />
+        
+
+    </data>
+</odoo>
+
+
+        

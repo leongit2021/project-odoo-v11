@@ -1,0 +1,70 @@
+<odoo>
+    <data>
+        <record id="view_list_shipping_instruction_wiz_form" model="ir.ui.view">
+            <field name="name">list.shipping.instruction.wiz.form</field>
+            <field name="model">list.shipping.instruction.wiz</field>
+            <field name="arch" type="xml">
+                <form string="New Shipping Instruction">
+                    <group>
+                        <group>
+                            <field name="pickup_id" invisible="1" options="{'no_create':True, 'no_create_edit': True}"/>
+                            <field name="invoice_id" options="{'no_create':True, 'no_create_edit': True}" placeholder="Filter by Purchase Order..."/>
+                        </group>
+                        <group>
+                            <field name="partner_id" string="Forwarder"/>
+                            <field name="mode_transport" string="Mode of Transport"/>
+                            <field name="departure" string="Departure"/>
+                            <field name="arrival" string="Arrival"/>    
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Shipping Instruction Detail">
+                         <field name="instruction_ids">
+                            <tree editable="bottom" >
+                                <field name="commercial_invoice_id" force_save="1" options="{'no_create': True,'no_create_edit':True}"/>
+                                <field name="date"/>
+                                <field name="purchase_id" string="PO Number"/>
+                                <field name="partner_ref"/>
+                                <field name="customer_partner_ref"/>
+                                <field name="boxes_qty" string="Boxes Qty" sum="Boxes Qty"/>
+                                <field name="gross_lb" string="Gross Weight (Lbs)" sum="Gross Weight (Lbs)"/>
+                                <field name="gross_kg" string="Gross Weight (Kg)" sum="Gross Weight (Kg)"/>
+                            </tree>
+                         </field>
+                        </page>
+                        <page string="Survey" name="survey_wiz">
+                            <field name="survey_ids">
+                                <tree editable="bottom">
+                                    <field name="sequence"/>
+                                    <field name="load_code" string="Load Code/WJ" readonly="1"/>
+                                    <field name="purchase_order_line_id" invisible="1"/>
+                                    <field name="purchase_id" string="PO Number" readonly="1"/>
+                                    <field name="product_id" string="Product" readonly="1"/>
+                                    <field name="date" string="Survey Date"/>
+                                    <field name="name" string="Survey Remarks"/>
+                                    <!-- <field name="partner_ref" readonly="1"/> -->
+                                    <field name="doc_survey" string="Attachment"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                    <footer>
+                        <button name="set_shipping_instruction" string="Set" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Close" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_list_shipping_instruction_wiz" model="ir.actions.act_window">
+            <field name="name">New Shipping Instruction</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">list.shipping.instruction.wiz</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

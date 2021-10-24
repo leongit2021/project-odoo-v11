@@ -1,0 +1,478 @@
+<odoo>
+  <data>
+    <!-- custom clearance -->
+    <record model="ir.ui.view" id="custom_clearance_form">
+        <field name="name">custom.clearance.form</field>
+        <field name="model">custom.clearance</field>
+        <field name="arch" type="xml">
+            <form string="Custom Clearance">
+                <header>
+                    <button name="action_draft" string="Set To Draft" attrs="{'invisible': [('state','!=','cancelled')]}" type="object" class="oe_highlight" groups="ati_pti_shipment_tracking.group_shipment_user_forwarder,ati_pti_shipment_tracking.group_shipment_user_log"/>
+                    <button name="action_confirm" string="Confirm" attrs="{'invisible': [('state','!=','draft')]}" type="object" class="oe_highlight" groups="ati_pti_shipment_tracking.group_shipment_user_forwarder,ati_pti_shipment_tracking.group_shipment_user_log"/>
+                    <button name="action_need_bc_28" string="BC 2.8 Complete" attrs="{'invisible': [('state','!=','need_bc_28')]}" type="object" class="oe_highlight"/>
+                    <button name="action_done" string="Done" attrs="{'invisible': [('state','!=','confirm')]}" type="object" class="oe_highlight" groups="ati_pti_shipment_tracking.group_shipment_user_forwarder,ati_pti_shipment_tracking.group_shipment_user_log"/>
+                    <button name="action_cancel" string="Cancel" attrs="{'invisible': [('state','in',('draft','cancelled'))]}" type="object" class="oe_inline"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="bc_two_eight_view" type="object" class="oe_stat_button" icon="fa fa-tasks" attrs="{'invisible': ['|',('state', 'in', ('draft','confirm')),('code', 'not in', ('BC16'))]}" groups="ati_pti_shipment_tracking.group_shipment_user_log">
+                            <field name="bc_two_eight_count" widget="statinfo" string="BC 2.8"/>
+                        </button>
+                        <button name="cc_inventory_view" type="object" class="oe_stat_button" icon="fa fa-file" attrs="{'invisible': [('state', 'in', ('draft','confirm'))]}" groups="ati_pti_shipment_tracking.group_shipment_user_log">
+                            <field name="stock_picking_count" widget="statinfo" string="Receipt"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="awb_bl_id" domain="[('state','=','done')]" required="1"  string="AWB/BL" attrs="{'readonly':[('state','!=','draft')]}" options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="shipping_instruction_id" invisible="1"/>
+                            <field name="job_ref" />
+                            <field name="pabean_partner_id" context="{'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}" domain="[('industry_id.name','=ilike','KPPBC')]" options="{'no_create': True, 'no_create_edit': True}"/>
+                            <field name="bc_type_id" domain="[('code','!=','BC28')]" required="1" attrs="{'readonly':[('state','!=','draft')]}" options="{'no_create': True, 'no_create_edit': True,'no_open': True}"/>
+                            <field name="code" invisible="1"/>
+                            <field name="arrival_date" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="box_ids" invisible="1" domain="[('invoice_line_id','=',shipping_instruction_id)]" attrs="{'readonly': ['|',('awb_bl_id','=',False),('state','!=','draft')]}" widget="many2many_tags" options="{'no_create': True, 'no_create_edit': True}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Goods Detail" name="goods_detail">
+                            <field name="goods_detail_ids" readonly="1">
+                                <tree default_order="sequence asc" editable="bottom" create="false" delete="false" >
+                                    <field name="sequence" class="text-align: center;"/>
+                                    <!-- <field name="pickup_id"/> -->
+                                    <field name="purchase_order_line_id" invisible="1" options="{'no_create': True,'no_create_edit':True}"/>
+                                    <field name="purchase_id" string="PO" invisible="1" force_save="1"/>
+                                    <field name="po_number" string="PO Number"/>
+                                    <field name="partner_ref"/>
+                                    <field name="load_code"/>
+                                    <field name="po_line_number"/>
+                                    <field name="skep_pib_id" readonly="1"/>
+                                    <field name="item_code"/>
+                                    <field name="item_desc"/>
+                                    <field name="picked_qty"/>
+                                    <field name="picked_uom"/>
+                                    <field name="rts_date"/>
+                                    <field name="nor_date"/>
+                                    <field name="is_lartas"/>
+                                    <field name="need_bc_ids" readonly="1" widget="many2many_tags"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Document Checklist" name="document_checklist">
+                            <field name="document_ids">
+                                <tree editable="buttom">
+                                    <field name="document_check_id"/>
+                                    <field name="remarks"/>
+                                    <field name="date"/>
+                                    <field name="attachment" string="File"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="BC 1.6 Document" attrs="{'invisible': [('code','!=','BC16')]}">
+                            <group>
+                                <group string="BC 1.6" attrs="{'invisible': [('code','!=','BC16')]}">
+                                    <field name="submission_no" attrs="{'required': [('state','=','confirm')]}"/>
+                                    <field name="submission_date"/>
+                                    <field name="registration_no"/>
+                                    <field name="registration_date"/>
+                                    <field name="hoarding_place"/>
+                                </group>
+                                <group string="Input SPPB BC 1.6" attrs="{'invisible': [('code','!=','BC16')]}">
+                                    <field name="sppb_no" attrs="{'required':[('state','=','confirm'),('code','=','BC16')]}"/>
+                                    <field name="sppb_date" attrs="{'required':[('state','=','confirm'),('code','=','BC16')]}"/>
+                                    <field name="sppb_registration_no" attrs="{'required':[('state','=','confirm'),('code','=','BC16')]}"/>
+                                    <field name="item_out_date" attrs="{'required':[('state','=','confirm')]}"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="BC 2.8 Document" attrs="{'invisible': [('code','!=','BC16')]}">
+                            <field name="bc_two_eight_ids" readonly="1" context="{'default_bc_two_eight_id': id}">
+                                <tree>
+                                    <field name="bc_two_eight_id" invisible="1"/>
+                                    <field name="submission_no"/>
+                                    <field name="submission_date"/>
+                                    <field name="registration_no"/>
+                                    <field name="registration_date"/>
+                                    <field name="hoarding_place"/>
+                                    <field name="sppb_no"/>
+                                    <field name="sppb_date"/>
+                                    <field name="sppb_registration_no"/>
+                                    <!-- <field name="goods_detail_ids" domain="[('pickup_id','=',bc_two_eight_id.awb_bl_id.awb_bl_ids.invoice_id)]"/> -->
+                                    <!-- <field name="goods_detail_ids"/> -->
+                                </tree>
+                                <form>
+                                    <group>
+                                        <group string="BC 2.8">
+                                            <field name="bc_two_eight_id" invisible="1" readonly="1"/>
+                                            <!-- <field name="instruction_id" /> -->
+                                            <field name="pickup_goods_id" invisible="1" readonly="1"/>
+                                            <field name="submission_no" required="1"/>
+                                            <field name="submission_date"/>
+                                            <field name="registration_no"/>
+                                            <field name="registration_date"/>
+                                            <field name="hoarding_place"/>
+                                            <!-- <button name="stamp_bc_28"  string="Stamp BC 2.8" type="object" class="oe_highlight" groups=""/> -->
+                                        </group>
+                                        <group string="Input SPPB BC 2.8">
+                                            <field name="sppb_no"/>
+                                            <field name="sppb_date"/>
+                                            <field name="sppb_registration_no"/>
+                                        </group>
+                                        <!-- <field name="goods_detail_ids" string="Goods Detail" domain="[('pickup_id','=',pickup_goods_id)]"> -->
+                                        
+                                        <field name="goods_detail_ids" string="Goods Detail">
+                                            <tree  edit="false" open="false">
+                                                <field name="sequence" class="text-align: center;"/>
+                                                <field name="purchase_order_line_id" invisible="1" options="{'no_create': True,'no_create_edit':True}"/>
+                                                <field name="purchase_id" string="PO" invisible="1" force_save="1"/>
+                                                <field name="po_number" string="PO Number"/>
+                                                <field name="partner_ref"/>
+                                                <field name="load_code"/>
+                                                <field name="po_line_number"/>
+                                                <field name="item_code"/>
+                                                <field name="item_desc"/>
+                                                <field name="picked_qty"/>
+                                                <field name="picked_uom"/>
+                                                <field name="rts_date"/>
+                                                <field name="nor_date"/>
+                                                <field name="is_lartas"/>
+                                                <!-- <field name="need_bc_id" context="{'default_id': parent.id}"/> -->
+                                                <field name="need_bc_ids" readonly="1" widget="many2many_tags"/>
+
+                                            </tree>
+                                            <form create="false" edit="false">
+                                                <group >
+                                                    <group>
+                                                        <field name="sequence" class="text-align: center;" readonly="1"/>
+                                                        <field name="po_number" string="PO Number" readonly="1"/>
+                                                        <field name="partner_ref" readonly="1"/>
+                                                        <field name="load_code" readonly="1"/>
+                                                        <field name="po_line_number" readonly="1"/>
+                                                        <field name="item_code" readonly="1"/>
+                                                        <field name="item_desc" readonly="1"/>
+                                                    </group>
+                                                    <group>
+                                                        <field name="picked_uom" readonly="1"/>
+                                                        <field name="rts_date" readonly="1"/>
+                                                        <field name="nor_date" />
+                                                        <field name="is_lartas" readonly="1"/>
+                                                    </group>
+                                                </group>
+                                                
+                                            </form>
+                                        </field>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="BC 2.0 Document" attrs="{'invisible': [('code','!=','BC20')]}">
+                            <group>
+                                <group string="BC 2.0" attrs="{'invisible': [('code','!=','BC20')]}">
+                                    <field name="submission_no"/>
+                                    <field name="submission_date"/>
+                                    <field name="registration_no"/>
+                                    <field name="registration_date"/>
+                                    <field name="hoarding_place"/>
+                                </group>
+                                <group string="Input SPPB 2.0" attrs="{'invisible': [('code','!=','BC20')]}">
+                                    <field name="sppb_no" attrs="{'required':[('state','=','confirm'),('code','=','BC20')]}"/>
+                                    <field name="sppb_date" attrs="{'required':[('state','=','confirm'),('code','=','BC20')]}"/>
+                                    <field name="sppb_registration_no" attrs="{'required':[('state','=','confirm'),('code','=','BC20')]}"/>
+                                    <field name="item_out_date" attrs="{'required':[('state','=','confirm')]}"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="custom_clearance_tree">
+        <field name="name">custom.clearance.tree</field>
+        <field name="model">custom.clearance</field>
+        <field name="arch" type="xml">
+            <tree decoration-primary="state=='confirm'" decoration-info="state=='need_bc_28'" decoration-success="state=='done'" decoration-danger="state=='cancelled'">
+                <field name="name"/>
+                <field name="awb_bl_id"/>
+                <field name="job_ref" />
+                <field name="pabean_partner_id"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="action_custom_clearance">
+        <field name="name">Custom Clearance</field>
+        <field name="res_model">custom.clearance</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_custom_clearance" name="Custom Clearance" parent="delivery_and_custom_clearence_menu" sequence="1" action="action_custom_clearance"/>
+
+
+
+
+    <!-- bc 2.8 -->
+    <!-- custom clearance -->
+    <record model="ir.ui.view" id="bc_two_eight_form">
+        <field name="name">bc.two.eight.form</field>
+        <field name="model">bc.two.eight</field>
+        <field name="arch" type="xml">
+            <form string="BC 2.8">
+                <header>
+                    <button name="action_draft" string="Set To Draft" attrs="{'invisible': [('state','!=','cancelled')]}" type="object" class="oe_highlight" />
+                    <button name="action_done" string="Done" attrs="{'invisible': [('state','!=','draft')]}" type="object" class="oe_highlight"/>
+                    <button name="action_cancel" string="Cancel" attrs="{'invisible': [('state','in',('draft','cancelled'))]}" type="object" class="oe_inline"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="bc_two_eight_inventory_view" type="object" class="oe_stat_button" icon="fa fa-file" >
+                            <field name="stock_picking_count" widget="statinfo" string="Receipt"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="BC 2.8">
+                            <field name="bc_two_eight_id" invisible="1" readonly="1"/>
+                            <field name="pickup_goods_id" invisible="1" readonly="1"/>
+                            <field name="bc_type_id" domain="[('code','=','BC28')]" required="1" attrs="{'readonly': [('state','!=','draft')]}" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"/>
+                            <field name="submission_no" required="1" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="submission_date" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="registration_no" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="registration_date" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="hoarding_place" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <!-- <button name="stamp_bc_28"  string="Stamp BC 2.8" type="object" class="oe_highlight" groups=""/> -->
+                        </group>
+                        <group string="Input SPPB BC 2.8">
+                            <field name="sppb_no" required="1" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="sppb_date" required="1" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="sppb_registration_no" required="1" attrs="{'readonly': [('state','!=','draft')]}"/>
+                        </group>
+                        <!-- <field name="goods_detail_ids" string="Goods Detail" domain="[('pickup_id','=',pickup_goods_id)]"> -->
+                        <p>Goods Detail</p><br/>
+                        <button name="%(ati_pti_shipment_tracking.action_bc_two_eight_wizard)d" attrs="{'invisible': ['|',('state','not in',('draft'))]}" string="⇒ add goods detail" type="action" class="oe_inline oe_link oe_left" groups=""/>
+                        <field name="goods_detail_ids" string="Goods Detail" attrs="{'readonly': [('state','!=','draft')]}">
+                            <tree  default_order="sequence asc" edit="false" open="false">
+                                <field name="sequence" class="text-align: center;"/>
+                                <field name="purchase_order_line_id" invisible="1" options="{'no_create': True,'no_create_edit':True}"/>
+                                <field name="purchase_id" string="PO" invisible="1" force_save="1"/>
+                                <field name="po_number" string="PO Number"/>
+                                <field name="partner_ref"/>
+                                <field name="load_code"/>
+                                <field name="po_line_number"/>
+                                <field name="item_code"/>
+                                <field name="item_desc"/>
+                                <field name="picked_qty"/>
+                                <field name="picked_uom"/>
+                                <field name="rts_date"/>
+                                <field name="nor_date"/>
+                                <field name="is_lartas"/>
+                                <field name="need_bc_ids" readonly="1" widget="many2many_tags"/>
+                            </tree>
+                            <form create="false" edit="false">
+                                <group >
+                                    <group>
+                                        <field name="sequence" class="text-align: center;" readonly="1"/>
+                                        <field name="po_number" string="PO Number" readonly="1"/>
+                                        <field name="partner_ref" readonly="1"/>
+                                        <field name="load_code" readonly="1"/>
+                                        <field name="po_line_number" readonly="1"/>
+                                        <field name="item_code" readonly="1"/>
+                                        <field name="item_desc" readonly="1"/>
+                                    </group>
+                                    <group>
+                                        <field name="picked_uom" readonly="1"/>
+                                        <field name="rts_date" readonly="1"/>
+                                        <field name="nor_date" />
+                                        <field name="is_lartas" readonly="1"/>
+                                    </group>
+                                </group>
+                                
+                            </form>
+                        </field>
+                
+                    </group>
+                    
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="bc_two_eight_tree">
+        <field name="name">bc.two.eight.tree</field>
+        <field name="model">bc.two.eight</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="state=='done'" decoration-danger="state=='cancelled'">
+                <field name="bc_two_eight_id" invisible="1" readonly="1"/>
+                <field name="pickup_goods_id" invisible="1" readonly="1"/>
+                <field name="submission_no" required="1"/>
+                <field name="submission_date"/>
+                <field name="registration_no"/>
+                <field name="registration_date"/>
+                <field name="hoarding_place"/>
+                <field name="sppb_no"/>
+                <field name="sppb_date"/>
+                <field name="sppb_registration_no"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="bc_two_eight_form2">
+        <field name="name">bc.two.eight.form2</field>
+        <field name="model">bc.two.eight</field>
+        <field name="priority" eval="15"/>
+        <field name="arch" type="xml">
+            <form string="BC 2.8" create="false" edit="false" delete="false">
+                <header>
+                    <!-- <button name="action_draft" string="Set To Draft" attrs="{'invisible': [('state','!=','cancelled')]}" type="object" class="oe_highlight"/>
+                    <button name="action_done" string="Done" attrs="{'invisible': [('state','!=','draft')]}" type="object" class="oe_highlight"/>
+                    <button name="action_cancel" string="Cancel" attrs="{'invisible': [('state','in',('draft','cancelled'))]}" type="object" class="oe_inline"/> -->
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="bc_two_eight_inventory_view" type="object" class="oe_stat_button" icon="fa fa-file" >
+                            <field name="stock_picking_count" widget="statinfo" string="Receipt"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="BC 2.8">
+                            <field name="bc_two_eight_id" invisible="0" readonly="1"/>
+                            <field name="pickup_goods_id" invisible="0" readonly="1"/>
+                            <field name="bc_type_id" required="1" attrs="{'readonly': [('state','!=','draft')]}" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"/>
+                            <field name="submission_no" required="1" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="submission_date" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="registration_no" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="registration_date" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="hoarding_place" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <!-- <button name="stamp_bc_28"  string="Stamp BC 2.8" type="object" class="oe_highlight" groups=""/> -->
+                        </group>
+                        <group string="Input SPPB BC 2.8">
+                            <field name="sppb_no" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="sppb_date" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="sppb_registration_no" attrs="{'readonly': [('state','!=','draft')]}"/>
+                        </group>
+                        <!-- <field name="goods_detail_ids" string="Goods Detail" domain="[('pickup_id','=',pickup_goods_id)]"> -->
+                        <p>Goods Detail</p><br/>
+                        <!-- <button name="%(ati_pti_shipment_tracking.action_bc_two_eight_wizard)d" attrs="{'invisible': ['|',('state','not in',('draft'))]}" string="⇒ add goods detail" type="action" class="oe_inline oe_link oe_left" groups=""/> -->
+                        <field name="goods_detail_ids" string="Goods Detail" attrs="{'readonly': [('state','!=','draft')]}">
+                            <tree  default_order="sequence asc" edit="false" open="false">
+                                <field name="sequence" class="text-align: center;"/>
+                                <field name="purchase_order_line_id" invisible="1" options="{'no_create': True,'no_create_edit':True}"/>
+                                <field name="purchase_id" string="PO" invisible="1" force_save="1"/>
+                                <field name="po_number" string="PO Number"/>
+                                <field name="partner_ref"/>
+                                <field name="load_code"/>
+                                <field name="po_line_number"/>
+                                <field name="item_code"/>
+                                <field name="item_desc"/>
+                                <field name="picked_qty"/>
+                                <field name="picked_uom"/>
+                                <field name="rts_date"/>
+                                <field name="nor_date"/>
+                                <field name="is_lartas"/>
+                                <field name="need_bc_ids" readonly="1" widget="many2many_tags"/>
+                            </tree>
+                            <form create="false" edit="false">
+                                <group >
+                                    <group>
+                                        <field name="sequence" class="text-align: center;" readonly="1"/>
+                                        <field name="po_number" string="PO Number" readonly="1"/>
+                                        <field name="partner_ref" readonly="1"/>
+                                        <field name="load_code" readonly="1"/>
+                                        <field name="po_line_number" readonly="1"/>
+                                        <field name="item_code" readonly="1"/>
+                                        <field name="item_desc" readonly="1"/>
+                                    </group>
+                                    <group>
+                                        <field name="picked_uom" readonly="1"/>
+                                        <field name="rts_date" readonly="1"/>
+                                        <field name="nor_date" />
+                                        <field name="is_lartas" readonly="1"/>
+                                    </group>
+                                </group>
+                                
+                            </form>
+                        </field>
+                
+                    </group>
+                    
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="bc_two_eight_tree2">
+        <field name="name">bc.two.eight.tree2</field>
+        <field name="model">bc.two.eight</field>
+        <field name="arch" type="xml">
+            <tree create="false" edit="false" delete="false" decoration-success="state=='done'" decoration-danger="state=='cancelled'">
+                <field name="bc_two_eight_id" invisible="1" readonly="1"/>
+                <field name="pickup_goods_id" invisible="1" readonly="1"/>
+                <field name="submission_no" required="1"/>
+                <field name="submission_date"/>
+                <field name="registration_no"/>
+                <field name="registration_date"/>
+                <field name="hoarding_place"/>
+                <field name="sppb_no"/>
+                <field name="sppb_date"/>
+                <field name="sppb_registration_no"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="action_bc_two_eight">
+        <field name="name">Custom Clearance</field>
+        <field name="res_model">bc.two.eight</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="bc_two_eight_tree2"/>
+    </record>
+    
+
+    <menuitem id="menu_bc_two_eight_hist" name="History BC 2.8" parent="delivery_and_custom_clearence_menu" sequence="5" groups="ati_pti_shipment_tracking.group_shipment_user_log"/>
+    <menuitem id="menu_bc_two_eight" name="BC 2.8" parent="menu_bc_two_eight_hist" sequence="5" action="action_bc_two_eight"/>
+
+
+</data>
+</odoo>
+
+
+        

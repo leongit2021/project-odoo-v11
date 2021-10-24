@@ -1,0 +1,58 @@
+<odoo>
+    <data>
+        <record id="view_list_pickup_goods_wiz_form" model="ir.ui.view">
+            <field name="name">list.pickup.goods.wizard.form</field>
+            <field name="model">list.pickup.goods.wizard</field>
+            <field name="arch" type="xml">
+                <form string="List Pickup Goods">
+                    <group>
+                        <field name="purchase_id" options="{'no_create':True, 'no_create_edit': True}" placeholder="Filter by Purchase Order..."/>
+                        <field name="summary_nor_goods_id" string="Load Code" options="{'no_create':True, 'no_create_edit': True}" placeholder="Filter by Summary NOR Goods..."/>
+                        <field name="nor_date" placeholder="Filter By NOR Date"/>
+                        <field name="purchase_order_line_ids" widget="many2many_tags" options="{'no_create':True, 'no_create_edit': True}"/>
+                        <!-- <field name="co_type" required="1"/> -->
+                        <field string="Upload Excel File" name="by_xlsx"/>
+                    </group>
+                    <group attrs="{'invisible': [('by_xlsx','=',False)]}">
+                        <p>Arrange Template Format Excel As: <br/><i>Load Code/WJ, SP Number, Sequence, Item Code/PN</i></p>
+                        <field name="book" filename="book_filename"  placeholder="Upload XLS file..." widget="binary"/>
+                        <field name="book_filename" invisible="1"/>  
+                        <button class="oe_highlight" string="Import" name="import_file" type="object"/>
+                    </group>
+                    <notebook>
+                        <page string="Collect Goods">
+                         <field name="pickup_ids">
+                            <tree editable="bottom" >
+                                <field name="purchase_order_line_id" invisible="1" force_save="1" options="{'no_create': True,'no_create_edit':True}"/>
+                                <field name="po_number" readonly="1" string="PO Number"/>
+                                <field name="load_code" readonly="1"/>
+                                <field name="partner_ref" readonly="1"/>
+                                <field name="product_id" readonly="1"/>
+                                <field name="picked_qty" string="Qty"/>
+                                <field name="product_uom"/>
+                                <field name="rts_date" />
+                                <field name="nor_date" readonly="1"/>
+                            </tree>
+                         </field>
+                        </page>
+                    </notebook>
+                    <footer>
+                        <button name="get_pickup_goods" string="Set" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Close" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_list_pickup_goods_wiz" model="ir.actions.act_window">
+            <field name="name">List Pickup Goods</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">list.pickup.goods.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

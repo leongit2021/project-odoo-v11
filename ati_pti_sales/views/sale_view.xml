@@ -1,0 +1,29 @@
+<odoo>
+  <data>
+    <record id="view_sale_skep_pib_inherit" model="ir.ui.view">
+        <field name="name">view.sale.skep.pib.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[1]/field[@name='order_line']/form/group/group[1]/label[1]" position="before">
+                <field name="skep_pib_ids" widget="many2many_tags"/>
+            </xpath>
+            <xpath expr="//notebook/page[1]/field[@name='order_line']/tree/field[@name='product_uom']" position="after">
+                <field name="skep_pib_ids" widget="many2many_tags"/>
+                <button name="%(action_show_skep_pib_wiz)d" string="SKEP/PIB History" type="action" icon="fa fa-camera"/>
+            </xpath>
+
+            <!-- smart button skep -->
+            <xpath expr="//form/sheet/div[1]/button[@name='action_view_invoice']" position="after">
+                <button name="formalities_view" type="object" class="oe_stat_button" icon="fa fa-cog fa-spin fa-3x fa-fw" attrs="{'invisible': [('state', '=', 'cancel')]}">
+                    <field name="skep_count" widget="statinfo" string="SKEP"/> and <field name="pib_count" widget="statinfo" string="PIB"/>
+                </button>
+            </xpath>
+
+        </field>
+    </record>
+</data>
+</odoo>
+
+
+        
