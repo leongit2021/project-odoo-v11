@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--Report-->
+     <template id="report_journal_entry_document_inherit" inherit_id="iwesabe_reports_journal_entry.report_journal_entry_document">
+
+        <xpath expr="//div[@class='page']/table/tbody" position="replace">
+                <tbody class="invoice_tbody">
+                    <t t-if="o.is_arrange == True">
+                        <tr t-foreach="o.line_ids.sorted(key=lambda r: r.sequence)" t-as="l">
+                            <td><span t-field="l.account_id"/></td>
+                            <td groups="analytic.group_analytic_accounting">
+                                <span t-field="l.analytic_account_id"/>
+                            </td>
+                            <td><span t-field="l.partner_id"/></td>
+                            <td>
+                                <span t-field="l.name"/>
+                            </td>
+                            <td><span t-field="l.currency_id.name"/></td>
+                            <td class="text-right"><span class="text-right" t-field="l.debit"/></td>
+                            <td class="text-right"><span class="text-right" t-field="l.credit"/></td>
+                            <td class="text-right"><span class="text-right" t-field="l.amount_currency"/></td>
+                            <!--<td><span t-field="l.date_maturity"/></td>-->
+                        </tr>
+                    </t>
+                    <t t-else="o.is_arrange == False">
+                        <tr t-foreach="o.line_ids.sorted(key=lambda r: r.debit, reverse=True)" t-as="l">
+                            <td><span t-field="l.account_id"/></td>
+                            <td groups="analytic.group_analytic_accounting">
+                                <span t-field="l.analytic_account_id"/>
+                            </td>
+                            <td><span t-field="l.partner_id"/></td>
+                            <td>
+                                <span t-field="l.name"/>
+                            </td>
+                            <td><span t-field="l.currency_id.name"/></td>
+                            <td class="text-right"><span class="text-right" t-field="l.debit"/></td>
+                            <td class="text-right"><span class="text-right" t-field="l.credit"/></td>
+                            <td class="text-right"><span class="text-right" t-field="l.amount_currency"/></td>
+                            <!--<td><span t-field="l.date_maturity"/></td>-->
+                        </tr>
+                    </t>
+                    <tr/>
+                    <tr class="border-black">
+                        <td colspan="4"/>
+                        <td groups="analytic.group_analytic_accounting"/>
+                        <td class="text-right"> <span class="text-right" t-field="o.amount"/></td>
+                        <td class="text-right"> <span class="text-right" t-field="o.amount"/></td>
+                        <td/>
+                    </tr>
+                    <tr class="border-black"/>
+                </tbody>
+        </xpath>
+
+     </template>
+</odoo>

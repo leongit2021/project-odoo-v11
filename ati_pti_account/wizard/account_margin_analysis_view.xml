@@ -1,0 +1,47 @@
+<odoo>
+    <data>
+        <record id="view_margin_analysis_form_wizard" model="ir.ui.view">
+            <field name="name">view.margin.analysis.wizard</field>
+            <field name="model">account.margin.analysis.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Report Margin Analysis">
+                    <p class="oe_grey">
+                        You will download Margin Analysis Reports???.
+                    </p>
+                    <group>
+                            <label for="date_from" string="Date From"/>
+                            <div>
+                                <field name="date_from" class="oe_inline" placeholder="Date From..."/>
+                                <label string=" - " class="oe_inline"/>
+                                <field name="date_to" class="oe_inline" placeholder="Date To..."/>
+                            </div>
+                            <field name="is_manual_selected" widget="toggle_button"/>
+                            <!-- <field name="project_ids" required="1" domain="[('create_date','&gt;=',date_from),('create_date','&lt;=',date_to)]" widget="many2many_tags" options="{'no_create':True,'no_create_edit':True}" placeholder="Select projects..."/> -->
+                            <field name="project_ids" required="0" domain="[('name','not in',('GENERAL','GEN','GENERA','General','Gen'))]" widget="many2many_tags" options="{'no_create':True,'no_create_edit':True}" placeholder="Select projects..."/>
+                            <field name="report_format" widget="selection"/>
+                    </group>
+                    <group>
+                    </group>
+                    <footer>
+                        <button name="generate" string="Print" type="object" class="oe_highlight"/>
+                        <button string="Close" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_margin_analysis" model="ir.actions.act_window">
+            <field name="name">Margin Analysis Report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.margin.analysis.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_margin_analysis_form_wizard"/>
+            <field name="target">new</field>
+            <!-- <field name="multi">True</field> -->
+        </record>
+            
+        <menuitem id="acc_margin_analysis_report" name="Margin Analysis Report" parent="account_finreport.menu_account_finreport_financial" sequence="105" action="action_margin_analysis" groups="account.group_account_user"/>
+
+    </data>
+</odoo>

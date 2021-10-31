@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<report string="Faktur Pajak Single Line - Print Out"
+		id="ati_pti_account.action_report_faktur_pajak_printout_sl" model="account.invoice"
+		report_type="qweb-pdf" name="ati_pti_account.report_faktur_pajak_printout_sl"
+		file="ati_pti_account.report_faktur_pajak_printout_sl" print_report_name="'Faktur - '+ (object.number or '')" 
+		groups="account.group_account_invoice" />
+
+	<record id="report_paperformat_a4_portrait_tax_sl" model="report.paperformat">
+		<field name="name">Portrait A4 Tax</field>
+		<field name="default" eval="True" />
+		<field name="format">A4</field>
+		<field name="page_height">0</field>
+		<field name="page_width">0</field>
+		<field name="orientation">Portrait</field>
+		<field name="margin_top">30</field>
+		<field name="margin_bottom">7</field>
+		<field name="margin_left">7</field>
+		<field name="margin_right">7</field>
+		<field name="header_line" eval="False" />
+		<field name="header_spacing">0</field>
+		<field name="dpi">90</field>
+	</record>
+
+	<record id="ati_pti_account.action_report_faktur_pajak_printout_sl" model="ir.actions.report">
+		<field name="paperformat_id" ref="ati_pti_account.report_paperformat_a4_portrait_tax_sl" />
+	</record>
+
+	<template id="ati_pti_account.external_layout_standard_printout">
+		<div class="header">
+		</div>
+		<div class="article o_report_layout_standard">
+			<t t-raw="0" />
+		</div>
+		<div class="footer">
+		</div>
+	</template>
+
+	<template id="ati_pti_account.external_layout_printout">
+		<t t-if="not o and docs">
+			<t t-set="o" t-value="docs" />
+		</t>
+		<t t-if="o and 'company_id' in o">
+			<t t-set="company" t-value="o.company_id.sudo()" />
+		</t>
+		<t t-if="not o or not 'company_id' in o">
+			<t t-set="company" t-value="res_company" />
+		</t>
+		<t t-call="ati_pti_account.external_layout_standard_printout">
+			<t t-raw="0" />
+		</t>
+	</template>
+
+	<template id="ati_pti_account.report_faktur_pajak_printout_sl">
+		<t t-call="web.html_container">
+			<t t-foreach="docs" t-as="o">
+				<t t-call="ati_pti_account.report_faktur_pajak_document_printout_sl" t-lang="o.partner_id.lang" />
+			</t>
+		</t>
+	</template>
+
+	<template id="ati_pti_account.report_faktur_pajak_document_printout_sl">
+		<t t-call="ati_pti_account.external_layout_printout">
+			<t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})" />
+			<t t-set="nol" t-value="0" />
+			<div class="page">
+				<h4 style="text-align:center;">
+					<span>Faktur Pajak</span>
+				</h4>
+				<table class="table table-bordered" style="border-color:black;">
+					<tbody>
+						<tr>
+							<td colspan="3" style="border:1px solid black;">
+								<span>Kode dan Nomer Seri Faktur Pajak : </span>
+								<span t-field="o.x_faktur_code"/>.<span t-field="o.nomor_faktur_id"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3" style="border:1px solid black;">
+								<span>Pengusaha Kena Pajak</span>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3" style="border:1px solid black;">
+								<table>
+									<tr>
+										<tr>
+											<td>Nama</td>
+											<td style="width:10px;"/>
+											<td>:</td>
+											<td style="width:5px;"/>
+											<!-- <td>PT. INDOTURBINE</td> -->
+											<td>
+												<span t-field="res_company.partner_id"/>
+											</td>
+										</tr>
+										<tr>
+											<td>Alamat</td>
+											<td style="width:10px;"/>
+											<td>:</td>
+											<td style="width:5px;"/>
+											<td>
+												<span t-field="res_company.partner_id.street"/>
+												<span t-field="res_company.partner_id.street2"/>
+												<span t-field="res_company.partner_id.city"/>
+												<span t-field="res_company.partner_id.state_id"/>
+												<span t-field="res_company.partner_id.zip"/>
+												<span t-field="res_company.partner_id.country_id"/>
+											</td>
+										</tr>
+										<tr>
+											<td style="padding-bottom:10px;">NPWP</td>
+											<td style="width:10px;"/>
+											<td>:</td>
+											<td style="width:5px;"/>
+											<td>01.360.474.9-062.000</td>
+											<!-- <td><span t-field=""/></td> -->
+										</tr>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3" style="border:1px solid black;">
+								<span>Pembelian Barang Kena Pajak / Penerima Jasa Kena Pajak</span>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3" style="border:1px solid black;">
+								<table>
+									<tr>
+										<tr>
+											<td>Nama</td>
+											<td style="width:10px;"/>
+											<td>:</td>
+											<td style="width:5px;"/>
+											<!-- <td>PT. PERTAMNINA HULU ENERGI OSES</td> -->
+											<td>
+												<span t-field="o.partner_id.name"/>
+											</td>
+										</tr>
+										<tr>
+											<td>Alamat</td>
+											<td style="width:10px;"/>
+											<td>:</td>
+											<td style="width:5px;"/>
+											<td>
+												<span t-field="o.partner_id.street"/>
+												<span t-field="o.partner_id.street2"/>
+												<span t-field="o.partner_id.city"/>
+												<span t-field="o.partner_id.state_id"/>
+												<span t-field="o.partner_id.zip"/>
+												<span t-field="o.partner_id.country_id"/>
+											</td>
+										</tr>
+										<tr>
+											<td style="padding-bottom:10px;">NPWP</td>
+											<td style="width:10px;"/>
+											<td>:</td>
+											<td style="width:5px;"/>
+											<td>
+												<span t-field="o.partner_id.npwp"/>
+											</td>
+										</tr>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td width="5%" style="text-align:center;vertical-align:middle;border:1px solid black;">
+								<span>No.</span>
+							</td>
+							<td width="60%" style="text-align:center;vertical-align:middle;border:1px solid black;">
+								<span>Nama Barang Kena Pajak / Jasa Kena Pajak</span>
+							</td>
+							<td width="35%" style="text-align:center;vertical-align:middle;border:1px solid black;">
+								<span>Harga Jual / Pengganti / Uang / Muka / Termin</span>
+							</td>
+						</tr>
+						
+						
+						 <!-- <tr><td style="text-align:center;vertical-align:middle;border:1px solid black;"/>
+					  <td style="border:1px solid black;"><span t-field="o.project_id.job_title" style="font-size:10px;font-weight:bold"/></td>
+					  <td style="text-align:right;vertical-align:middle;border:1px solid black;"/>
+					  </tr> -->
+						
+						
+						<tr t-foreach="o.faktur_single_line_ids" t-as="l">
+							<td style="text-align:center;vertical-align:middle;border:1px solid black;">
+								<span t-esc="1"/>
+							</td>
+							<td style="border:1px solid black;">
+								<div t-field="l.name"/>
+								<!-- <div>
+									<span t-field="l.price_unit_idr" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.env[&quot;res.currency&quot;].search([(&quot;name&quot;, &quot;=&quot;, &quot;IDR&quot;)])}"/>
+									<span>x</span>
+									<span t-field="l.quantity"/>
+								</div> -->
+							</td>
+							<td style="text-align:right;vertical-align:middle;border:1px solid black;">
+								<span t-field="l.amount_untaxed" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.env[&quot;res.currency&quot;].search([(&quot;name&quot;, &quot;=&quot;, &quot;IDR&quot;)])}"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" style="border:1px solid black;">
+								<span>Harga Jual / Penggantian</span>
+							</td>
+							<td style="text-align:right;vertical-align:middle;border:1px solid black;">
+								<span t-field="o.amount_untaxed_idr" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.env[&quot;res.currency&quot;].search([(&quot;name&quot;, &quot;=&quot;, &quot;IDR&quot;)])}"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" style="border:1px solid black;">
+								<span>Dikurangin Potongan Harga</span>
+							</td>
+							<td style="text-align:right;vertical-align:middle;border:1px solid black;">
+								<span t-esc="nol" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.env[&quot;res.currency&quot;].search([(&quot;name&quot;, &quot;=&quot;, &quot;IDR&quot;)])}"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" style="border:1px solid black;">
+								<span>Dikurangi Uang Muka</span>
+							</td>
+							<td style="text-align:right;vertical-align:middle;border:1px solid black;">
+								<span t-esc="nol" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.env[&quot;res.currency&quot;].search([(&quot;name&quot;, &quot;=&quot;, &quot;IDR&quot;)])}"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" style="border:1px solid black;">
+								<span>Dasar Pengenaan Pajak</span>
+							</td>
+							<td style="text-align:right;vertical-align:middle;border:1px solid black;">
+								<span t-field="o.amount_untaxed_idr" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.env[&quot;res.currency&quot;].search([(&quot;name&quot;, &quot;=&quot;, &quot;IDR&quot;)])}"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" style="border:1px solid black;">
+								<span>PPN = 10% x Dasar Pengenaan Pajak</span>
+							</td>
+							<td class="number-report" style="text-align:right;vertical-align:middle;border:1px solid black;">
+								<span t-esc="o.round_down(o.amount_untaxed_idr * 0.1,0)" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.env[&quot;res.currency&quot;].search([(&quot;name&quot;, &quot;=&quot;, &quot;IDR&quot;)])}"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" style="border:1px solid black;">
+								<span>Total PPnBM (Pajak Penjualan Barang Mewah)</span>
+							</td>
+							<td style="text-align:right;vertical-align:middle;border:1px solid black;">
+								<span t-esc="nol" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.env[&quot;res.currency&quot;].search([(&quot;name&quot;, &quot;=&quot;, &quot;IDR&quot;)])}"/>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<p style="font-size:11;">Sesuai dengan ketentuan yang berlaku. Direktorat Jendral Pajak mengatur bahwa Faktur
+					Pajak ini telah ditandatangani secara elektronik sehingga tidak diperlukan tanda tangan basah
+					padak Faktur Pajak ini
+				</p>
+				<div class="clearfix">
+					<div id="total" class="row">
+						<div class="col-xs-4 pull-right">
+							<table style="width:250px;page-break-inside: avoid;">
+								<tr>
+									<td style="padding-bottom:120px;">
+										<strong>
+											<!--<span t-field="res_company.partner_id.city"/>-->
+											<span>Jakarta Pusat</span>
+										</strong>
+										<span>, </span>
+										<span t-field="o.date_invoice"/>
+									</td>
+								</tr>
+								<tr class="border-black">
+									<td style="padding-bottom:20px;">
+										<strong>
+										  <span>Trenady Pramudya</span>
+											<!--<span t-field="o.team_id.user_id"/>
+											<span> - </span>
+											<span t-field="o.team_id.team_type"/>-->
+										</strong>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div style="font-size:11;">
+					<span>Invoice: <span t-field="o.move_name"/>.</span>
+					<span>Order: <span t-field="o.name"/>.</span>
+					<span>
+						Nilai Tukar Kurs:
+						<span t-field="o.env[&quot;res.currency.rate&quot;].search([(&quot;name&quot;, &quot;&lt;=&quot;, o.date_invoice),(&quot;currency_id.name&quot;,&quot;=&quot;,&quot;IDR&quot;)], limit=1, order=&quot;name DESC&quot;).rate" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.env[&quot;res.currency&quot;].search([(&quot;name&quot;, &quot;=&quot;, &quot;IDR&quot;)])}"/>
+						<span/>
+						<span>/ 1 </span>
+						<span t-field="o.currency_id"/>
+						.
+					</span>
+					<span>Berdasarkan KMK No: <span t-field="o.env[&quot;res.currency.rate&quot;].search([(&quot;name&quot;, &quot;&lt;=&quot;, o.date_invoice),(&quot;currency_id.name&quot;,&quot;=&quot;,&quot;IDR&quot;)], limit=1, order=&quot;name DESC&quot;).description"/>.</span>
+					<span>Tanggal: <span t-field="o.env[&quot;res.currency.rate&quot;].search([(&quot;name&quot;, &quot;&lt;=&quot;, o.date_invoice),(&quot;currency_id.name&quot;,&quot;=&quot;,&quot;IDR&quot;)], limit=1, order=&quot;name DESC&quot;).x_kmk"/>.</span>
+				</div>
+				<div style="font-size:11;">
+					<span>Invoice Value: </span>
+					<span t-field="o.currency_id"/>
+					<span t-field="o.amount_total" t-field-options="{&quot;widget&quot;: &quot;False&quot;}"/>
+				</div>
+			</div>
+		</t>
+	</template>
+</odoo>

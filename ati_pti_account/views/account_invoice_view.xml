@@ -1,0 +1,38 @@
+<odoo>
+  <data>
+    <record id="view_ai_faktur_single_line_inherit" model="ir.ui.view">
+        <field name="name">view.ai.faktur.single.line.inherit</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page/field[@name='tax_line_ids']" position="after">
+                <notebook>
+                <page string="Faktur Single Line">
+                    <field name="faktur_single_line_ids" string="Faktur Single Line">
+                        <tree editable="bottom" string="Faktur Single Line">
+                            <field name="name" placeholder="Fill the description..."/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount_untaxed"/>
+                        </tree>
+                    </field>
+                </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+    <!-- tree -->
+    <record id="view_ai_stock_tree" model="ir.ui.view">
+        <field name="name">view.ai.stock.tree</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='company_id']" position="after">
+                <field name="picking_ids" widget="many2many_tags"/>
+            </xpath>
+        </field>
+    </record>
+</data>
+</odoo>
+
+
+        

@@ -1,0 +1,20 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+    <record id="view_account_journal_search_inherit_account" model="ir.ui.view">
+        <field name="name">account.journal.search.inherit.account</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_move_filter"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//field[@name='name']" position="attributes">
+                    <attribute name="string">Transaksi</attribute>
+                </xpath>
+            </data>
+        </field>
+    </record>
+</data>
+</odoo>
+
+
+        

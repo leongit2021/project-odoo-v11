@@ -1,0 +1,25 @@
+<odoo>
+  <data>
+        <record id="view_account_gl_by_range_form" model="ir.ui.view">
+            <field name="name">view.account.gl.by.range.form</field>
+            <field name="model">account.finglreport.wizard</field>
+            <field name="inherit_id" ref="account_finreport.view_account_finglreport_wizard_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='filter']" position="after">
+                        <field name="is_range" attrs="{'invisible': [('filter','!=','account')]}" widget="toggle_button"/>
+                        <label for="account_id_from" string="Find Account By Range" attrs="{'invisible': ['|',('is_range','=',False),('filter','!=','account')]}"/>
+                        <div attrs="{'invisible': ['|',('is_range','=',False),('filter','!=','account')]}">
+                            <field name="account_id_from" attrs="{'invisible': ['|',('is_range','=',False),('filter','!=','account')], 'required' :[('is_range','=',True),('filter','=','account')]}" class="oe_inline" placeholder="Account From" options="{'no_create_edit':True, 'no_create':True}"/> 
+                            <label string="-" class="oe_inline" attrs="{'invisible': ['|',('is_range','=',False),('filter','!=','account')]}"/>
+                            <field name="account_id_to" attrs="{'invisible': ['|',('is_range','=',False),('filter','!=','account')], 'required' :[('is_range','=',True),('filter','=','account')]}" class="oe_inline" placeholder="Account To" options="{'no_create_edit':True, 'no_create':True}"/>
+                        </div>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+    </data>
+</odoo>
+
+
+        

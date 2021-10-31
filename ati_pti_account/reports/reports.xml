@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <report 
+        id="ati_pti_account.margin_analysis_xlsx" 
+        string="Margin Analysis Report" 
+        model="account.margin.analysis.wizard"
+        auto="True"
+        report_type="xlsx" 
+        name="ati_pti_account.margin_analysis_xlsx"
+        file="Margin Analysis"
+        attachment_use="False" 
+        />
+
+    <record id="ati_pti_account.margin_analysis_xlsx" model="ir.actions.report">
+        <field name="print_report_name">'%s' %(object.name)</field>
+    </record>
+
+</odoo>
