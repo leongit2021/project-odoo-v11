@@ -60,6 +60,7 @@
                                     <field name="po_number" string="PO Number" readonly="1"/>
                                     <field name="partner_ref" string="Vendor Reference" readonly="1"/>
                                     <field name="load_code" readonly="1"/>
+                                    <field name="transaction_method_name" readonly="1"/>
                                     <field name="po_line_number" readonly="1"/>
                                     <field name="item_code" readonly="1"/>
                                     <field name="item_desc" readonly="1"/>
@@ -329,6 +330,7 @@
                                     <field name="commercial_invoice_id" domain="[('pickup_goods_id','=',parent.invoice_id)]" style="text-align: left;" options="{'no_create': True, 'no_create_edit': True}"/>
                                     <field name="date"/>
                                     <field name="purchase_id" invisible="1"/>
+                                    <field name="transaction_method_name" readonly="1"/>
                                     <field name="partner_ref"/>
                                     <field name="customer_partner_ref"/>
                                     <field name="boxes_qty"/>
@@ -367,6 +369,7 @@
                                     <field name="po_number" string="PO Number"/>
                                     <field name="partner_ref" string="Vendor Reference"/>
                                     <field name="load_code"/>
+                                    <field name="transaction_method_name" readonly="1"/>
                                     <field name="po_line_number"/>
                                     <field name="item_code"/>
                                     <field name="item_desc"/>

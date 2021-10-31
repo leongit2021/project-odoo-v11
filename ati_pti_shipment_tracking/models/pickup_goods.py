@@ -282,7 +282,7 @@ class PickupGoods(models.Model):
 
     # define state tracking
     def _set_state_tracking(self):
-        for rec in self.picking_ids:
+        for rec in self.pickup_ids:
             rec.state_tracking = 'order_to_collect'
     
 
@@ -299,6 +299,8 @@ class PickupGoodsLine(models.Model):
     po_number = fields.Char(string="PO Number", related="purchase_id.name", store=True)
     partner_ref = fields.Char(string='Vendor Reference', related='purchase_id.partner_ref')
     load_code = fields.Char(string='Load Code', related='purchase_order_line_id.load_code')
+    transaction_method_id = fields.Many2one('transaction.method', related='purchase_id.sale_id.transaction_method_id', string='Transaction Method')
+    transaction_method_name = fields.Char(related='transaction_method_id.name',string='Transaction Method')
     po_line_number = fields.Integer(related='purchase_order_line_id.sequence', string='PO Line Number')
     product_id = fields.Many2one('product.product', related='purchase_order_line_id.product_id', string='Product')
     item_code = fields.Char(string='Item Code', related='product_id.default_code')
@@ -533,6 +535,8 @@ class GoodsInvoiceLine(models.Model):
     invoice_line_id = fields.Many2one('goods.invoice', string='Invoice Detail Line', ondelete='cascade')
     date = fields.Date(string='Invoice Date', default=fields.Datetime.now)
     purchase_id = fields.Many2one('purchase.order', string='PO Number', store=True)
+    transaction_method_id = fields.Many2one('transaction.method', related='purchase_id.sale_id.transaction_method_id', string='Transaction')
+    transaction_method_name = fields.Char(related='transaction_method_id.name',string='Transaction Method')
     partner_ref = fields.Char(string='Internal Reference (SP#)') 
     customer_partner_ref = fields.Char(string='Customer Reference (Customer PO#)') 
     boxes_qty = fields.Float(string='Boxes Qty')
@@ -580,6 +584,9 @@ class GoodsInvoiceLine(models.Model):
             rec.partner_ref = rec.commercial_invoice_id.purchase_id.partner_ref or '' 
             rec.customer_partner_ref = rec.commercial_invoice_id.purchase_id.x_client_order_ref or ''
             # print('----rec', rec, rec.commercial_invoice_id.name)
+
+    # @api.depend('transaction_method_id')
+    # def get_transaction_method_
 
 
 class ReportSurvey(models.Model):

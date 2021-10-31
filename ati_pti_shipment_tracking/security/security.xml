@@ -8,7 +8,7 @@
         </record>
         <!--employee-->
         <record id="group_shipment_user_emp" model="res.groups">
-            <field name="name">Base User</field>
+            <field name="name">Employee</field>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
             <field name="category_id" ref="module_shipment_tracking"/>
             <!-- <field name="users" eval="[(4, ref('base.user_root'))]"/> -->
@@ -43,13 +43,24 @@
             <field name="implied_ids" eval="[(4, ref('group_shipment_user_emp'))]"/>
         </record>
 
-        <!-- invisible basic module odoo -->
-        <!-- <record id="group_base_leaves_st" model="res.groups">
-            <field name="name">Group Leaves</field>
+        <!--  -->
+        <!-- <record id="group_shipment_user_inv" model="res.groups">
+            <field name="name">Bill Admin</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
             <field name="category_id" ref="module_shipment_tracking"/>
-            <field name="implied_ids" eval="[(4, ref('group_shipment_user_emp'))]"/>
+        </record>
+        <record id="group_shipment_mng_inv" model="res.groups">
+            <field name="name">Bill Manager</field>
+            <field name="category_id" ref="module_shipment_tracking"/>
+            <field name="implied_ids" eval="[(4, ref('group_shipment_user_inv'))]"/>
         </record> -->
 
+        <!-- invisible basic module odoo -->
+        <record id="group_basic_module_st" model="res.groups">
+            <field name="name">Show Basic Module</field>
+            <field name="category_id" ref="module_shipment_tracking"/>
+            <field name="implied_ids" eval="[(4, ref('group_shipment_user_emp'))]"/>
+        </record>
         
     </data>
 </odoo>

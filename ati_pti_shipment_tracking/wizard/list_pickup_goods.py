@@ -181,7 +181,9 @@ class ListPickupGoodsWiz(models.TransientModel):
             col = 0
             # 1. load code/wj
             if sheet.cell(row, col).value:
-                load_code = sheet.cell(row, col).value.strip()
+                load_code = sheet.cell(row, col).value
+                if type(load_code).__name__ in ('float','int'):
+                    load_code = str(int(load_code))
             else:
                 warning+="Warning, not found Load Code/WJ at row: %s !!!\n" % (row)
 
@@ -189,7 +191,9 @@ class ListPickupGoodsWiz(models.TransientModel):
 
             # 2. sp_number
             if sheet.cell(row, col).value:
-                sp_number = sheet.cell(row, col).value.strip()
+                sp_number = sheet.cell(row, col).value
+                if type(sp_number).__name__ in ('float','int'):
+                    sp_number = str(int(sp_number))
             else:
                 warning+="Warning, not found SP Number at row: %s !!!\n" % (row)
 
@@ -205,7 +209,9 @@ class ListPickupGoodsWiz(models.TransientModel):
 
             # 4. item code
             if sheet.cell(row, col).value:
-                item_code = sheet.cell(row, col).value.strip()
+                item_code = sheet.cell(row, col).value
+                if type(item_code).__name__ in ('float','int'):
+                    item_code = str(int(item_code))
             else:
                 warning+="Warning, not found Item Code at row: %s !!!\n" % (row)
 

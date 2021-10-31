@@ -28,4 +28,3 @@ access_departure_arrival,departure_arrival.user,model_departure_arrival,base.gro
 
 access_packing_list,packing_list.user,model_packing_list,base.group_user,1,1,1,1
 access_packing_list_type,packing_list_type.user,model_packing_list_type,base.group_user,1,1,1,1
-

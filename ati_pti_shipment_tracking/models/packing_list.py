@@ -39,5 +39,3 @@ class PackingListType(models.Model):
 
 
     name = fields.Char(string='Type')
-
-

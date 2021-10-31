@@ -54,9 +54,8 @@
         'views/custom_clearance_view.xml',
         'views/stock_view.xml',
         'views/auto_check_goods_readiness_view.xml',
-        
-        # 'views/basic_module_view.xml',
-        
+
+        'views/views basic_module.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
