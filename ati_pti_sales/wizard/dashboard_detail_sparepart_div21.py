@@ -12,7 +12,7 @@ class DashboardDetailSparepartDiv21(models.TransientModel):
     date_from = fields.Date('Date From')
     date_to = fields.Date('Date To')
     date_as = fields.Date('Reported as of', default=fields.Datetime.now)
-    # so_ids = fields.Many2many('sale.order', string="Sales Quotation/Order Group")
+    so_ids = fields.Many2many('sale.order', string="Sales Order")
     team_ids = fields.Many2one('crm.team', string='Sales Channel', default= lambda self: self.env['crm.team'].search([('name','like','21 - Sparepart')], limit=1))
     
 

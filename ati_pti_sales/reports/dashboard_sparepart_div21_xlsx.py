@@ -12,10 +12,14 @@ class dashboard_sparepart_div21_xlsx(models.AbstractModel):
 
 
     def _get_so(self, objects):
+        domain = [('state','!=','cancel')]
         if objects.date_from and objects.date_to:
-            domain = [('team_id','=',objects.team_ids.id),('create_date','>=',objects.date_from),('create_date','<=',objects.date_to)]
+            domain += [('team_id','=',objects.team_ids.id),('create_date','>=',objects.date_from),('create_date','<=',objects.date_to)]
         else:
-            domain = [('team_id','=',objects.team_ids.id)]
+            domain += [('team_id','=',objects.team_ids.id)]
+        
+        if objects.so_ids:
+            domain += [('id','in',objects.so_ids.filtered(lambda r: r.state != 'cancel').ids)]
 
         return self.env['sale.order'].sudo().search(domain).sorted(key=lambda r: (r.name))
 

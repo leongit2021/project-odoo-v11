@@ -21,7 +21,6 @@ class ManagementReportWizard(models.TransientModel):
             if self.date_from > self.date_to:
                 raise UserError(_("You can not allowed Date From is greater than Date To."))
 
-
     @api.multi
     def generate(self):
         return self.env.ref('ati_pti_sales.management_xlsx').report_action(self.ids, config=False)

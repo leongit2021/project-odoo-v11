@@ -17,7 +17,7 @@
                             </div>
                             <field name="date_as" readonly="1" placeholder="Reported as of"/>
                             <field name="team_ids" required="1" options="{'no_create':True,'no_create_edit':True}" placeholder="Sales Channel..."/>
-                            <!-- <field name="so_ids" required="0" domain="[('create_date','&gt;=',date_from),('create_date','&lt;=',date_to)]" widget="many2many_tags" options="{'no_create':True,'no_create_edit':True}" placeholder="Select data Quotation or Order..."/> -->
+                            <field name="so_ids" domain="[('team_id','=',team_ids),('state','!=','cancel')]" widget="many2many_tags" options="{'no_create':True,'no_create_edit':True}" placeholder="Select Data Specific Quotation or Order..."/>
                     </group>
                     <group>
                     </group>
