@@ -24,6 +24,10 @@ class SkepPib(models.Model):
 
     skep_no = fields.Char(string='SKEP NO.', index=True, track_visibility='onchange')
     sale_id = fields.Many2one('sale.order', string='Quotation/Sales', copy=False)
+    currency_rate = fields.Float(related='sale_id.currency_rate', string='Currency Rate', default=1, digits=0, readonly=True)
+    # currency_rate = fields.Float(string='Currency Rate', default=1, digits=0, readonly=False)
+    currency_id   = fields.Many2one(related='sale_id.currency_id', store=True, string='Currency', readonly=True)
+    # currency_id   = fields.Many2one('res.currency', string='Currency', readonly=False)
     skep_date = fields.Date(string='SKEP Date')
     skep_recv_date = fields.Date(string='SKEP RECV DATE')
     skep_expiry_date = fields.Date(string='SKEP EXPIRY DATE')
@@ -196,8 +200,9 @@ class SkepPib(models.Model):
                         'product_id':rec.product_id.id or False,
                         'skep_qty':remaining_amount or 0,
                         # 'unit_skep_item_value':self._count_tkdn(rec)/rec.product_uom_qty if rec.product_uom_qty != 0 else 0
-                        'unit_skep_item_value': rec.count_tkdn/rec.product_uom_qty if rec.product_uom_qty != 0 else 0,
-                        'skep_item_value': rec.count_tkdn or 0,
+                        'unit_skep_item_value': rec.count_tkdn/rec.product_uom_qty if rec.product_uom_qty != 0 and rec.count_tkdn else 0,
+                        'skep_item_value': self._round_up_two_decimal(num = rec.count_tkdn) if rec.currency_id.name in ('USD','Usd','usd') else self._round_up_two_decimal(num = rec.count_tkdn * self.currency_rate),
+                        # 'skep_item_value': rec.count_tkdn,
                         }
                 vals.append((0,0,val))
                 seq_skep += 1
@@ -216,6 +221,11 @@ class SkepPib(models.Model):
                 rec.is_skep = False
 
 
+    def _round_up_two_decimal(self, num=0):
+        return math.ceil(num*100)/100
+
+
+
 class SkepLine(models.Model):
     _name = 'skep.line'
     _description = "SKEP LINE"
@@ -229,7 +239,8 @@ class SkepLine(models.Model):
     product_id = fields.Many2one('product.product', string='Product')
     part_number = fields.Char(related='product_id.default_code', string='PN')
     skep_qty     = fields.Float(string='Qty SKEP')
-    currency_id         = fields.Many2one('res.currency', string='Currency')
+    currency_id   = fields.Many2one(related='skep_id.currency_id', store=True, string='Currency', readonly=True)
+    # currency_id   = fields.Many2one('res.currency', string='Currency', readonly=False)
     unit_skep_item_value = fields.Monetary(string='Unit SKEP Amount')
     skep_item_value = fields.Monetary(string='SKEP Amount', compute="")
 
@@ -243,7 +254,8 @@ class SkepLine(models.Model):
                 if rec.skep_qty <= 0 or rec.skep_qty > remaining_qty:
                     raise UserError(_("Not allowed QTY SKEP less than or equal zero (0) or greater than Qty Outstanding: %d." % (remaining_qty)))
 
-                rec.skep_item_value = rec.skep_qty * rec.unit_skep_item_value
+                rec.skep_item_value = rec._round_up_two_decimal(num = rec.skep_qty * rec.unit_skep_item_value) if rec.currency_id.name in ('USD','Usd','usd') else rec._round_up_two_decimal(num = rec.skep_qty * rec.unit_skep_item_value * rec.skep_id.currency_rate)
+                # rec.skep_item_value = rec.skep_qty * rec.unit_skep_item_value
 
 
     def _count_current_skep_qty(self, sol = False):
@@ -261,8 +273,6 @@ class SkepLine(models.Model):
             if rec.skep_item_value <= 0:
                 raise UserError(_("Not allowed SKEP Amount less than or equal zero (0) ."))
 
-
-
     @api.model
     def create(self, vals):
         res = super(SkepLine, self).create(vals)
@@ -274,6 +284,8 @@ class SkepLine(models.Model):
 
         return res
 
+    def _round_up_two_decimal(self, num=0):
+        return math.ceil(num*100)/100
 
 
 class PibPib(models.Model):
@@ -288,6 +300,10 @@ class PibPib(models.Model):
     pib_date = fields.Date(string='PIB Date')
     pib_expiry_date = fields.Date(string='PIB EXPIRY DATE')
     pib_line_ids = fields.One2many('pib.line','pib_line_id', string='PIB Line')
+    # currency_id   = fields.Many2one(related='pib_id.currency_id', store=True, string='Currency', readonly=True)
+    currency_id   = fields.Many2one('res.currency', string='Currency', readonly=False)
+
+    
 
     @api.multi
     def name_get(self):
@@ -321,7 +337,8 @@ class PibPib(models.Model):
                         'pib_qty':remaining_amount or 0,
                         'reference_pib_qty': remaining_amount or 0,
                         'unit_pib_item_values':rec.unit_skep_item_value or 0,
-                        'pib_item_values': remaining_amount * rec.unit_skep_item_value,
+                        # 'pib_item_values': remaining_amount * rec.unit_skep_item_value if rec.currency_id.name in ('USD','Usd','usd') else remaining_amount * rec.unit_skep_item_value * self.pib_id.currency_rate,
+                        'pib_item_values': self._round_up_two_decimal(num=remaining_amount * rec.unit_skep_item_value),
                         }
                 vals.append((0,0,val))
                 seq_pib += 1
@@ -332,6 +349,10 @@ class PibPib(models.Model):
     def update_pib(self):
         # print('------update pib', self.pib_id)
         pass
+
+    def _round_up_two_decimal(self, num=0):
+        return math.ceil(num*100)/100
+
 
 
 class PibLine(models.Model):
@@ -352,9 +373,9 @@ class PibLine(models.Model):
     currency_id         = fields.Many2one('res.currency', string='Currency')
     unit_pib_item_values = fields.Monetary(string='Unit PIB Amount')
     pib_item_values = fields.Monetary(string='PIB Amount', compute='')
+    # currency_id   = fields.Many2one(related='pib_line_id.currency_id', store=True, string='Currency', readonly=True)
 
-
-
+    
     # @api.depends('pib_qty','unit_pib_item_values')
     # def onchange_pib_tkdn(self):
     #     for rec in self:
@@ -370,7 +391,8 @@ class PibLine(models.Model):
             if rec.unit_pib_item_values < 0:
                 raise UserError(_("Not allowed Qty PIB less than or equal zero (0) ."))
 
-            rec.pib_item_values = rec.pib_qty * rec.unit_pib_item_values
+            # rec.pib_item_values = rec.pib_qty * rec.unit_pib_item_values if rec.currency_id.name in ('USD','Usd','usd') else rec.pib_qty * rec.unit_pib_item_values * rec.pib_line_id.pib_id.currency_rate
+            rec.pib_item_values = rec._round_up_two_decimal(num = rec.pib_qty * rec.unit_pib_item_values)
 
     @api.onchange('product_id')
     def onchange_product_id(self):
@@ -384,4 +406,8 @@ class PibLine(models.Model):
         for rec in self:
             if rec.pib_item_values <= 0:
                 raise UserError(_("Not allowed PIB Amount less than or equal zero (0) ."))
+
+    def _round_up_two_decimal(self, num=0):
+        return math.ceil(num*100)/100
+
 

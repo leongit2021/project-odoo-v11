@@ -43,9 +43,9 @@ class ListPickupGoodsWiz(models.TransientModel):
             return res
 
         if self.nor_date:
-            return {'domain':{'purchase_order_line_ids':[('nor_date','=',self.nor_date)]}}
+            return {'domain':{'purchase_order_line_ids':[('nor_date','=',self.nor_date),('is_collect','=',False)]}}
 
-        return {'domain':{'purchase_order_line_ids':[('order_id','!=',False),('id','not in',ids)]}}
+        return {'domain':{'purchase_order_line_ids':[('order_id','!=',False),('id','not in',ids),('is_collect','=',False)]}}
     
     
     @api.onchange('purchase_order_line_ids')
@@ -232,6 +232,9 @@ class ListPickupGoodsWiz(models.TransientModel):
                         if rec.buffer_qty == 0:
                             continue
 
+                        if rec.is_collect == True:
+                            continue
+
                         val = {
                             'purchase_order_line_id': rec.id or False,
                             'po_number': rec.order_id.name or '',
@@ -246,6 +249,9 @@ class ListPickupGoodsWiz(models.TransientModel):
                         limit_qty_nor = self.env['summary.nor.goods'].sudo().search([('sales_order_no','=',rec.order_id.partner_ref),('position','=',rec.sequence),('product_id','=',rec.product_id.id)])
                         buffer_qty_nor = sum([lqn.buffer_qty for lqn in limit_qty_nor])
                         if buffer_qty_nor == 0:
+                            continue
+
+                        if rec.is_collect == True:
                             continue
 
                         val = {
@@ -295,9 +301,11 @@ class ListPickupGoodsWiz(models.TransientModel):
         # update pickup goods active id:  is_lartas: True
         if any([lartas]):
             self.goods_id.is_lartas = True
+
         sequence = 1
         for rec in self.goods_id.pickup_ids:
             rec.sequence = sequence
+            rec.purchase_order_line_id.is_collect = True
             sequence += 1
 
         return {}

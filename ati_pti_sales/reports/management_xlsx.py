@@ -159,10 +159,11 @@ class management_xlsx(models.AbstractModel):
         summary_nor_goods = self.env['summary.nor.goods'].sudo().search([('purchase_id','=',po.id),('position','=',pol.sequence),('product_id.default_code','=',pol.product_id.default_code)], limit=1)
         if summary_nor_goods:
             if summary_nor_goods.nor_state == 'no':
-                if pol.rts_date <= objects.date_as:
-                    actual_item_to_be_collected_status = 'Not Ready From Solar'
-                elif pol.rts_date > objects.date_as:
-                    actual_item_to_be_collected_status = 'RTS Overdue'
+                if pol and pol.rts_date:
+                    if pol.rts_date <= objects.date_as:
+                        actual_item_to_be_collected_status = 'Not Ready From Solar'
+                    elif pol.rts_date > objects.date_as:
+                        actual_item_to_be_collected_status = 'RTS Overdue'
                 else:
                     actual_item_to_be_collected_status = 'N/A'
                 return actual_item_to_be_collected_status

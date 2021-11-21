@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from typing import Sequence
 from odoo import models, fields, api, _
 from datetime import datetime, timedelta, time
 from odoo.exceptions import UserError, AccessError
@@ -12,6 +13,10 @@ class Stock(models.Model):
 
     custom_clearance_id = fields.Many2one('custom.clearance', string='Custom Clearance')
     bc_two_eight_id = fields.Many2one('bc.two.eight', string='BC 2.8')
+    sil_id = fields.Many2one('sil.sil', 'SIL')
+    sequence = fields.Integer(string='Seq')
+    sequence_ref =  fields.Integer(string='Sequence')
+    
 
     
     @api.multi

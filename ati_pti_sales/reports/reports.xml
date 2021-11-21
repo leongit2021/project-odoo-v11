@@ -66,6 +66,51 @@
         attachment_use="False" 
         />
 
+    <report 
+        id="ati_pti_sales.rfq_detail_xlsx" 
+        string="RFQ Detail Report" 
+        model="so.rfq.detail.wizard"
+        auto="True"
+        report_type="xlsx" 
+        name="ati_pti_sales.rfq_detail_xlsx"
+        file="RFQ Detail Report" 
+        attachment_use="False" 
+        />
+
+    <report 
+        id="ati_pti_sales.po_detail_so_xlsx" 
+        string="PO Detail Report" 
+        model="po.detail.so.wizard"
+        auto="True"
+        report_type="xlsx" 
+        name="ati_pti_sales.po_detail_so_xlsx"
+        file="PO Detail Report" 
+        attachment_use="False" 
+        />
+
+
+    <report 
+        id="ati_pti_sales.po_item_collect_xlsx" 
+        string="Item TO Be Collect Report" 
+        model="po.item.collect.wizard"
+        auto="True"
+        report_type="xlsx" 
+        name="ati_pti_sales.po_item_collect_xlsx"
+        file="Item To Be Collect Report" 
+        attachment_use="False" 
+        />
+
+    <report 
+        id="ati_pti_sales.item_arriving_xlsx" 
+        string="Item Arriving At Narogong" 
+        model="item.arriving.wizard"
+        auto="True"
+        report_type="xlsx" 
+        name="ati_pti_sales.item_arriving_xlsx"
+        file="Item Arriving At Narogong" 
+        attachment_use="False" 
+        />
+
 
     <!-- <report string  = "Sales Quotation/Order Report"
                 model   = "sales.quotation.order.wizard"

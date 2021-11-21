@@ -28,7 +28,7 @@ class PurchaseOrderLine(models.Model):
     transaction_method = fields.Char(related='order_id.sale_id.transaction_method_id.name', string='Transaction Method')
     skep_pib_id = fields.Many2one('skep.pib', string='SKEP')
     state_before_co = fields.Selection(selection=_STATES_BEFORE_CO,string="Status Ready",index=True,track_visibility="onchange",copy=False,default="not_ready")
-
+    is_collect = fields.Boolean(string='Is Collect?')
 
     @api.depends('product_qty','buffer_qty')
     def _compute_pol_buffer_qty(self):

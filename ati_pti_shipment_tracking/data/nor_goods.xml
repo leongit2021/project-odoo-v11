@@ -64,6 +64,15 @@
             <field name="padding">5</field>
         </record>
     </data>
+    <!--  -->
+    <data noupdate="1">
+        <record id="sil_sequence" model="ir.sequence">
+            <field name="name">SIL</field>
+            <field name="code">sil.sil</field>
+            <field name="prefix">SIL-%(y)s-</field>
+            <field name="padding">5</field>
+        </record>
+    </data>
     
 </odoo>
 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record model="sil.document.type" id="sil_doc_1">
+          <field name="name">DO Original</field>
+        </record>
+        <record model="sil.document.type" id="sil_doc_2">
+          <field name="name">Copy PO</field>
+        </record>
+        <record model="sil.document.type" id="sil_doc_3">
+          <field name="name">COC ORIGIN</field>
+        </record>
+    </data>
+</odoo>
+

@@ -226,6 +226,7 @@ class PickupGoods(models.Model):
     @api.multi
     def action_delete_pickup_line(self):
         for rec in self.pickup_ids:
+            rec.purchase_order_line_id.is_collect = False
             rec.unlink()
 
 

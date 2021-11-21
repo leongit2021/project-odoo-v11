@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <report string="SIL Printout" id="action_report_sil_printout" model="sil.sil" report_type="qweb-pdf" name="ati_pti_shipment_tracking.report_sil_printout" file="ati_pti_shipment_tracking.report_sil_printout" print_report_name="'SIL Printout - %s' % (object.name)" />
+
+    <record id="report_paperformat_a4_potrait_report_sil" model="report.paperformat">
+            <field name="name">Paper Format Custom Order</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">10</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">35</field>
+            <field name="dpi">90</field>
+    </record>
+
+    <record id="action_report_sil_printout" model="ir.actions.report">
+		<field name="paperformat_id" ref="ati_pti_shipment_tracking.report_paperformat_a4_potrait_report_sil" />
+	</record>
+
+
+
+
+    <template id="report_sil_printout">
+            <t t-call="web.basic_layout">
+                <div class="page">
+                    <t t-foreach="docs" t-as="doc">
+                        <table style="border-collapse: collapse; width: 97.8693%; height: 614px; border: 1px solid black; border-top: 0px solid transparent;" border="1">
+                            <tbody>
+                                <tr style="height: 18px;">
+                                    <td style="width: 50.3743%; text-align: center; height: 18px; border: 1px solid black; border-top: 0px solid transparent; border-right: 1px solid transparent; border-left: 1px solid transparent;" colspan="4">
+                                        <h2><span style="color: #0000ff;"><strong></strong></span></h2>
+                                    </td>
+                                    <td style="width: 42.5933%; text-align: center; height: 18px; border: 1px solid black; border-top: 0px solid transparent; border-right: 1px solid transparent; border-left: 1px solid transparent;" colspan="4">
+                                        <h2><span style="color: #0000ff;"><strong><span t-esc="doc.name"/></strong></span></h2>
+                                    </td>
+                                </tr>
+                                <tr style="height: 18px; ">
+                                    <td style="width: 16.9034%; height: 18px; padding-left: 3px; border: 1px solid black; border-bottom: 0px solid transparent;">Shipper</td>
+                                    <td style="width: 33.4709%; height: 18px; padding-left: 5px;" colspan="3">  <strong><span t-esc="doc.shipper_id.name"/></strong></td>
+                                    <td style="width: 11.7328%; height: 18px; padding-left: 3px; border: 1px solid black; border-bottom: 0px solid transparent;border-right: 0px solid transparent;">Consignee</td>
+                                    <td style="width: 30.8605%; height: 18px; padding-left: 5px;" colspan="3">: <span t-esc="doc.consignee_id.name"/></td>
+                                </tr>
+                                <tr style="height: 18px;">
+                                    <td style="width: 16.9034%; height: 18px; padding-left: 3px; border: 1px solid black; border-top: 0px solid transparent; border-bottom: 0px solid transparent;">Attn</td>
+                                    <td style="width: 33.4709%; height: 18px; padding-left: 5px;" colspan="3">  <strong><span t-esc="doc.attn_shipper"/></strong></td>
+                                    <td style="width: 11.7328%; height: 18px; padding-left: 3px; border: 1px solid black; border-top: 0px solid transparent;border-bottom: 0px solid transparent; border-right: 0px solid transparent;">Attn</td>
+                                    <td style="width: 30.8605%; height: 18px; padding-left: 5px;" colspan="3">: <span t-esc="doc.attn_consignee"/></td>
+                                </tr>
+                                <tr style="height: 18px;">
+                                    <td style="width: 16.9034%; height: 18px; padding-left: 3px; border: 1px solid black; border-top: 0px solid transparent;border-bottom: 0px solid transparent;">Phone</td>
+                                    <td style="width: 33.4709%; height: 18px; padding-left: 5px;" colspan="3">  <strong><span t-esc="doc.phone_shipper"/></strong></td>
+                                    <td style="width: 11.7328%; height: 18px; padding-left: 3px; border: 1px solid black; border-top: 0px solid transparent;border-bottom: 0px solid transparent; border-right: 0px solid transparent;">Phone</td>
+                                    <td style="width: 30.8605%; height: 18px; padding-left: 5px;" colspan="3">:  <span t-esc="doc.phone_consignee"/></td>
+                                </tr>
+                                <tr style="height: 18px;">
+                                    <td style="width: 16.9034%; height: 18px; padding-left: 3px; border: 1px solid black; border-top: 0px solid transparent;border-bottom: 0px solid transparent;">PTI Ref. No.</td>
+                                    <td style="width: 33.4709%; height: 18px; padding-left: 5px;" colspan="3">  <strong><span style="color: #0000ff;"><span t-esc="doc.pti_ref_no"/></span></strong></td>
+                                    <td style="width: 11.7328%; height: 18px; padding-left: 3px; border: 1px solid black; border-top: 0px solid transparent;border-bottom: 0px solid transparent; border-right: 0px solid transparent;">Fax</td>
+                                    <td style="width: 30.8605%; height: 18px; padding-left: 5px;" colspan="3">:  <span t-esc="doc.fax"/> </td>
+                                </tr>
+                                <tr style="height: 18px;">
+                                    <td style="width: 16.9034%; height: 18px; padding-left: 3px; border: 1px solid black; border-top: 0px solid transparent;border-bottom: 0px solid transparent;">PO Customer</td>
+                                    <td style="width: 33.4709%; height: 18px; padding-left: 5px;" colspan="3">  <strong><span style="color: #0000ff;"><span t-esc="doc.po_customer"/></span></strong></td>
+                                    <td style="width: 11.7328%; height: 18px; padding-left: 3px; border: 1px solid black; border-top: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;">Email</td>
+                                    <td style="width: 30.8605%; height: 18px; padding-left: 5px; " colspan="3">:  <span t-esc="doc.email"/> </td>
+                                </tr>
+                                <tr style="height: 18px;">
+                                    <td style="width: 16.9034%; height: 18px; padding-left: 3px; border: 1px solid black; border-top: 0px solid transparent;">Division</td>
+                                    <td style="width: 33.4709%; height: 18px; padding-left: 5px;" colspan="3">  <strong><span t-esc="doc.division.name"/></strong></td>
+                                    <td style="width: 11.7328%; height: 18px; padding-left: 3px; border: 1px solid black; border-top: 0px solid transparent; border-right: 0px solid transparent;"> </td>
+                                    <td style="width: 30.8605%; height: 18px; padding-left: 5px;" colspan="3"> </td>
+                                </tr>
+                                <tr style="height: 18px;">
+                                    <td style="width: 92.9676%; height: 18px;  border-left: 1px solid transparent;border-right: 1px solid transparent;" colspan="8"> </td>
+                                </tr>
+                                <tr style="height: 18px; border: 1px solid black;">
+                                    <td style="width: 92.9676%; height: 18px; text-align: center;" colspan="8"><h4><strong>SHIPPING INSTRUCTION ( Ref No.:<span style="color: #0000ff;"> <span t-esc="doc.ref_no"/> </span>) </strong></h4></td>
+                                </tr>
+                                <!-- ======== COLLECTION POINT ============ -->
+                                <tr style="height: 18px;">
+                                    <td style="width: 16.9034%; height: 18px; padding-left: 3px; border: 1px solid black; border-top: 0px solid transparent;border-bottom: 0px solid transparent;">Collection Point</td>
+                                    <td style="width: 76.0642%; height: 18px; padding-left: 5px;" colspan="7">  <strong><span t-esc="doc.collection_poin_id.name"/></strong></td>
+                                </tr>
+                                <tr style="height: 18px;">
+                                    <td style="width: 16.9034%; height: 18px;border: 1px solid black; border-top: 0px solid transparent;border-bottom: 0px solid transparent;"> </td>
+                                    <td style="width: 76.0642%; height: 18px; padding-left: 5px;" colspan="7">  <strong><span t-esc="doc.collection_poin_id.street"/></strong></td>
+                                </tr>
+                                <tr style="height: 18px;">
+                                    <td style="width: 16.9034%; height: 18px; border: 1px solid black; border-top: 0px solid transparent;border-bottom: 0px solid transparent;"> </td>
+                                    <td style="width: 76.0642%; height: 18px; padding-left: 5px;" colspan="7">  <strong><span t-esc="doc.collection_poin_id.street2"/></strong></td>
+                                </tr>
+                                <tr style="height: 18px;">
+                                    <td style="width: 16.9034%; height: 18px; border: 1px solid black; border-top: 0px solid transparent;"> </td>
+                                    <td style="width: 76.0642%; height: 18px; padding-left: 5px; border: 1px solid black; border-top: 0px solid transparent;" colspan="7">  <strong><span t-esc="'/'.join([child.name for child in doc.collection_poin_id.child_ids])"/></strong></td>
+                                </tr>
+                                <tr style="height: 18px;">
+                                    <td style="width: 16.9034%; height: 18px;"> </td>
+                                    <td style="width: 76.0642%; height: 18px; padding-left: 5px; border: 1px solid black; border-top: 0px solid transparent; border-bottom: 0px solid transparent;" colspan="7"> </td>
+                                </tr>
+                                <!-- ======== DELIVERY POINT ============ -->
+                                <t t-set="point" t-value="1"/>
+                                <!-- <t t-foreach="doc.picking_ids.mapped('partner_id')" t-as="partner"> -->
+                                <t t-foreach="doc._set_sil_order()" t-as="partner">
+                                
+
+                                    <tr style="height: 18px;">
+                                        <td style="width: 16.9034%; height: 18px; padding-left: 3px;"><br/>Delivery Point <span t-esc="point"/></td>
+                                        <td style="width: 76.0642%; height: 18px; padding-left: 5px; border: 1px solid black; border-top: 0px solid transparent; border-bottom: 0px solid transparent;" colspan="7">  <span style="color: #0000ff;"><br/><strong><span t-esc="partner.name"/></strong></span></td>
+                                    </tr>
+                                    <tr style="height: 18px;">
+                                        <td style="width: 16.9034%; height: 18px;"> </td>
+                                        <td style="width: 76.0642%; height: 18px; padding-left: 5px; border: 1px solid black; border-top: 0px solid transparent; border-bottom: 0px solid transparent;" colspan="7">  <span><strong><span t-esc="partner.street"/></strong></span></td>
+                                    </tr>
+                                    <tr style="height: 18px;">
+                                        <td style="width: 16.9034%; height: 18px;"> </td>
+                                        <td style="width: 76.0642%; height: 18px; padding-left: 5px; border: 1px solid black; border-top: 0px solid transparent; border-bottom: 0px solid transparent;" colspan="7">  <span><strong><span t-esc="partner.street2"/></strong></span></td>
+                                    </tr>
+                                    <tr style="height: 18px;">
+                                        <td style="width: 16.9034%; height: 18px;"> </td>
+                                        <td style="width: 76.0642%; height: 18px; padding-left: 5px; border: 1px solid black; border-top: 0px solid transparent; border-bottom: 0px solid transparent;" colspan="7">  <span><strong><span t-esc="partner.city"/> - <span t-esc="partner.country_id.name"/></strong></span></td>
+                                    </tr>
+                                    <tr style="height: 18px;">
+                                        <td style="width: 16.9034%; height: 18px;"> </td>
+                                        <td style="width: 76.0642%; height: 18px; padding-left: 5px; border: 1px solid black; border-top: 0px solid transparent; border-bottom: 0px solid transparent;" colspan="7">  <span><span t-esc="'/'.join([child.name or '' for child in partner.child_ids] if partner and partner.child_ids else [] )"/> (<span t-esc="partner.phone"/>)</span></td>
+                                    </tr>
+                                    <tr style="height: 18px;">
+                                        <td style="width: 16.9034%; height: 18px;"> </td>
+                                        <td style="height: 18px; width: 76.0642%; border: 1px solid black; border-top: 0px solid transparent; border-bottom: 0px solid transparent;" colspan="7"> </td>
+                                    </tr>
+                                    <tr style="height: 25px;">
+                                        <td style="width: 16.9034%; height: 18px;"> </td>
+                                        <td style="width: 5.93472%; height: 18px; text-align: center; border: 1px solid black; background-color:#e1eaea;"><strong>No</strong></td>
+                                        <td style="width: 13.0564%; height: 18px; text-align: center; border: 1px solid black; background-color:#e1eaea;"><strong>DO. Num</strong></td>
+                                        <td style="height: 18px; text-align: center; width: 14.4798%; border: 1px solid black; background-color:#e1eaea;"><strong>SO. Num</strong></td>
+                                        <td style="width: 11.7328%; height: 18px; text-align: center; border: 1px solid black; background-color:#e1eaea;"><strong>PO.Num</strong></td>
+                                        <td style="height: 18px; text-align: center; width: 25.2225%; border: 1px solid black; background-color:#e1eaea;" colspan="2"><strong>DIMENSI</strong></td>
+                                        <td style="width: 5.63798%; height: 18px; text-align: center; border: 1px solid black; background-color:#e1eaea;"><strong>packing</strong></td>
+                                    </tr>
+
+                                    <t t-set="no" t-value="1"/>
+                                    <t t-foreach="doc.picking_ids.filtered(lambda r: r.partner_id.id == partner.id).sorted(key=lambda s: s.sequence_ref)" t-as="picking">
+                                        <t t-set="do" t-value="picking.name"/>
+                                        <tr style="height: 25px;">
+                                            <td style="width: 16.9034%; height: 18px;"> </td>
+                                            <td style="width: 5.93472%; text-align: center; height: 18px; border: 1px solid black;"><span t-esc="no"/></td>
+                                            <td style="width: 13.0564%; text-align: left; height: 18px; border: 1px solid black;"><span t-esc="picking.name"/></td>
+                                            <td style="width: 14.4798%; text-align: center; height: 18px; border: 1px solid black;"><span t-esc="picking.origin"/></td>
+                                            <td style="width: 11.7328%; text-align: center; height: 18px; border: 1px solid black;"><span t-esc="picking.vendor_ref_number"/></td>
+                                            <td style="width: 25.2225%; text-align: left; height: 18px; border: 1px solid black;" colspan="2">
+                                                <!-- <span t-esc="','.join([dimensi.package_type for dimensi in picking.package_dimension_ids])"/> -->
+                                                <span t-esc="','.join([dimensi.package_dimension for dimensi in picking.package_dimension_ids])"/> =
+                                                <span t-esc="','.join([dimensi.package_weight for dimensi in picking.package_dimension_ids])"/>
+                                            </td>
+                                            <td style="width: 5.63798%; height: 18px; text-align: center; border: 1px solid black;"><span t-esc="','.join([dimensi.package_type for dimensi in picking.package_dimension_ids])"/></td>
+                                        </tr>
+                                        <t t-set="no" t-value="no+1"/>
+                                    </t>
+                                    <br/>
+                                    <t t-set="no" t-value="1"/>
+                                    <t t-set="point" t-value="point+1"/>
+                                </t>
+
+                                <!-- <t t-set="no" t-value="1"/>
+                                <t t-foreach="doc.picking_ids" t-as="picking">
+                                    <t t-set="do" t-value="picking.name"/>
+                                    <tr style="height: 25px;">
+                                        <td style="width: 16.9034%; height: 18px;"> </td>
+                                        <td style="width: 5.93472%; text-align: center; height: 18px;"><span t-esc="no"/></td>
+                                        <td style="width: 13.0564%; text-align: left; height: 18px;"><span t-esc="picking.name"/></td>
+                                        <td style="width: 14.4798%; text-align: center; height: 18px;"><span t-esc="picking.origin"/></td>
+                                        <td style="width: 11.7328%; text-align: center; height: 18px;"><span t-esc="picking.vendor_ref_number"/></td>
+                                        <td style="width: 25.2225%; text-align: left; height: 18px;" colspan="2">97X40X65 CM = 919 KG</td>
+                                        <td style="width: 5.63798%; height: 18px; text-align: center;">CTN</td>
+                                    </tr>
+                                    <t t-set="no" t-value="no+1"/>
+                                </t> -->
+                                <!-- <t t-set="no" t-value="1"/>
+                                <t t-foreach="doc.picking_ids" t-as="picking">
+                                    <t t-set="do" t-value="picking.name"/>
+                                    <tr t-foreach="do.picking_dimension_ids" t-as="package" style="height: 25px;">
+                                        <td style="width: 16.9034%; height: 18px;"> </td>
+                                        <td style="width: 5.93472%; text-align: center; height: 18px;"><span t-esc="no"/></td>
+                                        <td style="width: 13.0564%; text-align: left; height: 18px;"><span t-esc="picking.name"/></td>
+                                        <td style="width: 14.4798%; text-align: center; height: 18px;"><span t-esc="picking.origin"/></td>
+                                        <td style="width: 11.7328%; text-align: center; height: 18px;"><span t-esc="picking.vendor_ref_number"/></td>
+                                        <td style="width: 25.2225%; text-align: left; height: 18px;" colspan="2"><span><span t-esc="package.package_dimension"/> =<span t-esc="package.package_weight"/> </span> </td>
+                                        <td style="width: 5.63798%; height: 18px; text-align: center;"><span t-esc="package.package_type"/></td>
+                                    </tr>
+                                    <t t-set="no" t-value="no+1"/>
+                                </t> -->
+                                <tr style="height: 18px;">
+                                    <td style="width: 16.9034%; height: 18px; border: 1px solid black; border-top: 0px solid transparent; border-bottom: 0px solid transparent;"> </td>
+                                    <td style="width: 5.93472%; height: 18px;"> </td>
+                                    <td style="width: 13.0564%; height: 18px;"> </td>
+                                    <td style="width: 14.4798%; height: 18px;"> </td>
+                                    <td style="width: 11.7328%; height: 18px;"> </td>
+                                    <td style="width: 20.3264%; height: 18px;"> </td>
+                                    <td style="width: 4.89614%; height: 18px;"> </td>
+                                    <td style="width: 5.63798%; height: 18px;"> </td>
+                                </tr>
+                                <tr style="height: 18px;">
+                                    <td style="width: 16.9034%; height: 18px; border: 1px solid black; border-top: 0px solid transparent; border-bottom: 0px solid transparent;"> </td>
+                                    <td style="width: 5.93472%; height: 18px;"> </td>
+                                    <td style="width: 13.0564%; height: 18px;"> </td>
+                                    <td style="width: 14.4798%; height: 18px;"> </td>
+                                    <td style="width: 11.7328%; height: 18px;"> </td>
+                                    <td style="width: 20.3264%; height: 18px;"> </td>
+                                    <td style="width: 4.89614%; height: 18px;"> </td>
+                                    <td style="width: 5.63798%; height: 18px;"> </td>
+                                </tr>
+                                <tr style="height: 30px;">
+                                    <td style="width: 16.9034%; height: 30px; padding-left: 3px; border: 1px solid black;">Qty Packages</td>
+                                    <td style="width: 70.4263%; height: 30px; padding-left: 5px; border: 1px solid black; border-left: 0px solid transparent; border-right: 0px solid transparent;" colspan="6"><span><strong><span t-esc="doc.package_qty"/></strong></span></td>
+                                    <td style="width: 5.63798%; height: 30px; border: 1px solid black; border-left: 0px solid transparent;"> </td>
+                                </tr>
+                                <tr style="height: 40px;">
+                                    <td style="width: 16.9034%; height: 40px; padding-left: 3px; border: 1px solid black;">E.T.D./RTS</td>
+                                    <td style="width: 45.2037%; height: 40px; padding-left: 5px; border: 1px solid black;" colspan="4"><strong><span t-esc="doc.rts" t-options="{&quot;widget&quot;: &quot;date&quot;, &quot;format&quot;: &quot;dd MMMM Y&quot;}"/></strong></td>
+                                    <td style="width: 20.3264%; text-align: center; height: 40px; border: 1px solid black;">Mode Transport</td>
+                                    <td style="width: 10.5341%; text-align: center; height: 40px; border: 1px solid black;" colspan="2"><span style="color: #0000ff;"><strong><span t-esc="doc.mode_transport.name"/></strong></span></td>
+                                </tr>
+                                <!-- <tr style="height: 18px;">
+                                    <td style="width: 16.9034%; height: 18px;">DOKUMEN PENDUKUNG</td>
+                                    <td style="width: 76.0642%; height: 18px;" colspan="7">
+                                        <table style="border-collapse: collapse; width: 100%;" border="1">
+                                            <tbody>
+                                                <tr>
+                                                    <td style="width: 22.4028%;">1. DO Original</td>
+                                                    <td style="width: 10.9306%; text-align: center;">OK</td>
+                                                    <td style="width: 23.3589%;">5. SRT KEASLIAN BRG</td>
+                                                    <td style="width: 9.97454%; text-align: center;">OK</td>
+                                                    <td style="width: 24.3149%;">9. SURAT REPLAC .PN</td>
+                                                    <td style="width: 9.01852%; text-align: center;">OK</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width: 22.4028%;">2. Copy PO</td>
+                                                    <td style="width: 10.9306%; text-align: center;">OK</td>
+                                                    <td style="width: 23.3589%;">6. SRT WARRANTY</td>
+                                                    <td style="width: 9.97454%; text-align: center;">OK</td>
+                                                    <td style="width: 24.3149%;">10. SURAT</td>
+                                                    <td style="width: 9.01852%; text-align: center;">OK</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width: 22.4028%;">3. COC Origin</td>
+                                                    <td style="width: 10.9306%; text-align: center;">OK</td>
+                                                    <td style="width: 23.3589%;">7. SRT Ket.Asal Brg</td>
+                                                    <td style="width: 9.97454%; text-align: center;">OK</td>
+                                                    <td style="width: 24.3149%;">11. SURAT</td>
+                                                    <td style="width: 9.01852%; text-align: center;">OK</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width: 22.4028%;">4. COC Copy/Scan</td>
+                                                    <td style="width: 10.9306%; text-align: center;">OK</td>
+                                                    <td style="width: 23.3589%;">8. L O C</td>
+                                                    <td style="width: 9.97454%; text-align: center;">OK</td>
+                                                    <td style="width: 24.3149%;">12. SURAT</td>
+                                                    <td style="width: 9.01852%; text-align: center;">OK</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr> -->
+                                <tr style="height: 35px; border: 1px solid black;">
+                                    <td style="width: 16.9034%; height: 25px; padding-left: 3px; border: 1px solid black;">DOKUMEN PENDUKUNG</td>
+                                    <td style="width: 76.0642%; height: 25px;" colspan="7">
+                                        <table style="border-collapse: collapse; width: 100%;">
+                                            <tbody>
+                                                <t t-set="no" t-value="1"/>
+                                                <t t-foreach="doc.sil_ids" t-as="dokumen">
+                                                    <t t-if="dokumen.is_validate == true">
+                                                        <tr style="height: 35px;">
+                                                            <td style="width: 4.27191%; height: 30px; text-align: center;"><span t-esc="no"/></td>
+                                                            <td style="width: 30.8064%; height: 30px; "><span t-esc="dokumen.sil_doc_type_id.name"/></td>
+                                                            <td style="width: 64.9216%; height: 30px; padding-top: 5px;"><span style="border : 2px solid black; padding:1px;"> [OK] </span></td>
+                                                        </tr>
+                                                    </t>
+                                                    <t t-if="dokumen.is_validate == false">
+                                                        <tr style="height: 35px;">
+                                                            <td style="width: 4.27191%; height: 30px; text-align: center;"><span t-esc="no"/></td>
+                                                            <td style="width: 30.8064%; height: 30px; "><span t-esc="dokumen.sil_doc_type_id.name"/></td>
+                                                            <td style="width: 64.9216%; height: 30px; padding-top: 5px;"><span style="border : 2px solid black; padding:1px;"> [ ] </span></td>
+                                                        </tr>
+                                                    </t>
+                                                    <t t-set="no" t-value="no+1"/>
+                                                </t>
+
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <!-- <t t-set="no" t-value="1"/>
+                                <t t-foreach="doc.sil_ids" t-as="dokumen">
+                                    <t t-if="dokumen.is_validate is not False"/>
+                                    <tr style="height: 25px;">
+                                        <td style="width: 16.9034%; height: 25px;"></td>
+                                        <td style="width: 76.0642%; height: 25px;" colspan="7"><span><span t-esc="no"/></span><span t-esc="dokumen.sil_doc_type_id.name"/> <span style="border : solid black; padding:1px;"> [OK] </span></td>
+                                    </tr>
+                                    <t t-set="no" t-value="no+1"/>
+                                </t> -->
+                                <tr style="height: 30px; border: 1px solid black;">
+                                    <td style="width: 16.9034%; height: 30px; padding-left:3px; border: 1px solid black;">Delivery Date</td>
+                                    <td style="width: 45.2037%; height: 30px; text-align: center; " colspan="4"><span style="color: #0000ff;"><strong><span t-esc="doc.delivery_date" t-options="{&quot;widget&quot;: &quot;date&quot;, &quot;format&quot;: &quot;dd MMMM Y&quot;}"/> to <span t-esc="doc.end_delivery_date" t-options="{&quot;widget&quot;: &quot;date&quot;, &quot;format&quot;: &quot;dd MMMM Y&quot;}"/></strong></span></td>
+                                    <td style="width: 20.3264%; height: 30px; text-align: center; border: 1px solid black;">Description of Goods</td>
+                                    <td style="width: 10.5341%; height: 30px; text-align: center; border: 1px solid black;" colspan="2"><strong><span t-esc="doc.description"/></strong></td>
+                                </tr>
+                                <tr style="height: 30px; border: 1px solid black;">
+                                    <td style="width: 16.9034%; height: 30px; padding-left: 3px; border: 1px solid black;">Commodity</td>
+                                    <td style="width: 76.0642%; height: 30px; padding-left: 5px;" colspan="7"><span t-esc="doc.commodity"/></td>
+                                </tr>
+                                <tr style="height: 40px; border: 1px solid black;">
+                                    <td style="width: 16.9034%; height: 40px; padding-left: 3px; border: 1px solid black;">Remark</td>
+                                    <td style="width: 76.0642%; height: 40px; padding-left: 5px;" colspan="7"><h3><span style="color: #0000ff;"><strong><span t-esc="doc.remark"/></strong></span></h3></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                </div>
+            </t>
+    </template>
+</odoo>

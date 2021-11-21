@@ -72,6 +72,7 @@
                 <field name="outstanding_qty" string="Outstanding Qty"/>
                 <field name="rts_date"/>
                 <field name="nor_date"/>
+                <field name="is_collect"/>
                 <field name="state_before_co"/>
             </tree>
         </field>

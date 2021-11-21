@@ -28,3 +28,7 @@ access_departure_arrival,departure_arrival.user,model_departure_arrival,base.gro
 
 access_packing_list,packing_list.user,model_packing_list,base.group_user,1,1,1,1
 access_packing_list_type,packing_list_type.user,model_packing_list_type,base.group_user,1,1,1,1
+
+access_sil_sil,sil.sil.user,model_sil_sil,base.group_user,1,1,1,1
+access_sil_document,sil.document.user,model_sil_document,base.group_user,1,1,1,1
+access_sil_document_type,sil.document.type.user,model_sil_document_type,base.group_user,1,1,1,1
