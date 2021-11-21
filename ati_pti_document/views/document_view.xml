@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+        <record model="ir.ui.view" id="document_mgmt_view">
+			<field name="name">Document Management View</field>
+			<field name="model">document.document</field>
+			<field name="inherit_id" ref="document_management_system.view_document_form"/>
+			<field name="arch" type="xml">
+                <field name="description" position="after">
+                    <group>
+                        <group>
+                            <field name = "code" placeholder="Ex: DO,PLBIN,SKEP"/>
+                        </group>
+                        <group>
+                            <field name="book" filename="book_filename" placeholder="Upload XLS file..." widget="binary"/>
+	            	        <field name="book_filename" invisible="1"/>
+                        </group>
+                    </group>
+                    
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="document_do_mgmt_view">
+			<field name="name">Document DO Management View</field>
+			<field name="model">document.document</field>
+			<!-- <field name="inherit_id" ref="document_management_system.view_document_form"/> -->
+			<field name="arch" type="xml">
+				<xpath expr="//form" position="replace">
+                    <form>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="description"/>
+                                <field name = "code" placeholder="Ex: DO,PLBIN,SKEP"/>
+                            </group>
+                            <group>
+                                <field name="book" filename="book_filename" placeholder="Upload XLS file..." widget="binary" readonly="1"/>
+                                <field name="book_filename" invisible="1"/>
+                            </group>
+                        </group>
+                    </form>
+                </xpath>
+                <form>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="description"/>
+                            <field name = "code" placeholder="Ex: DO,PLBIN,SKEP"/>
+                        </group>
+                        <group>
+                            <field name="book" filename="book_filename" placeholder="Upload XLS file..." widget="binary" readonly="1"/>
+	            	        <field name="book_filename" invisible="1"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+  </data>
+</odoo>
